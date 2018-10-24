@@ -24,8 +24,13 @@ int main()
 	setvbuf(stdout, NULL, _IONBF, 0);
 
 //	ft_printf("abc %0d test %01561d end of string", -42, 256);
-	printf("coco %&rtasgdfsg2  mol mdr", 42);
-//	printf("%d %d", 42);
+//	printf("coco %&rtasgdfsg2  mol mdr", 42);
+//	printf("%D\n", 42);
+//	ft_printf("%D\n", 0xff11ff11ff88);
+//	printf("%D\n", 0xff11ff11ff88);
+//	ft_printf("%D\n", 280452758896520);
+//	printf("%D\n", 280452758896520);
+	ft_printf("%.123d testlol", 42);
 //	foo("test %d lol", token_table);
 
 	return 0;

@@ -8,7 +8,10 @@ set(SOURCES
     libft/ft_realloc.c
     libft/ft_strlen.c
     libft/ft_memcpy.c
+    libft/ft_ltoa.c
     libft/ft_itoa.c
+    libft/ft_atoi.c
+    libft/ft_isdigit.c
     libft/ft_putnbr_fd.c
     libft/ft_putchar_fd.c
         )

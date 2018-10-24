@@ -51,6 +51,7 @@ char			*ft_str_to_upper(char *str);
 int				ft_atoi(char const *str);
 int				ft_atoi_base(char const *str, char const *base, int base_len);
 char			*ft_itoa(int n);
+char			*ft_ltoa(long nb);
 char			*ft_itoa_base(int nb, char const *base, int base_len);
 
 int				ft_isalnum(int c);

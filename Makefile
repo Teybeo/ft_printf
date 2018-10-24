@@ -5,7 +5,10 @@ FILES += libft/array.c
 FILES += libft/ft_strlen.c
 FILES += libft/ft_memcpy.c
 FILES += libft/ft_realloc.c
+FILES += libft/ft_atoi.c
 FILES += libft/ft_itoa.c
+FILES += libft/ft_ltoa.c
+FILES += libft/ft_isdigit.c
 FILES += libft/ft_putchar_fd.c
 FILES += libft/ft_putnbr_fd.c
 

@@ -31,8 +31,9 @@ struct s_arg
 	bool zero_padding; // Default to blank-padding
 	bool positive_sign;
 	bool space_positive;
+	bool long_modifier;
 	int field_width;
-	int precision;
+	size_t precision;
 //	ft_token fn;
 	char token;
 };
@@ -52,22 +53,52 @@ int		get_first_index(const char *string, char c)
 	return (string[i] != '\0' ? i : -1);
 }
 
-bool get_next_arg(const char *string, t_arg *arg, int *consumed)
+t_arg get_next_arg(const char *string, int *consumed)
 {
 	const char	*ptr;
+	t_arg		arg;
 
+	arg = (t_arg){};
 	ptr = string;
 	while (*ptr != '\0')
 	{
-		if (*ptr == 'd')
+		if (*ptr == 'd' || *ptr == 'i')
 		{
-			arg->token = 'd';
+			arg.token = 'd';
 			break;
+		}
+		if (*ptr == 'D')
+		{
+			arg.token = 'd';
+			arg.long_modifier = true;
+			break;
+		}
+		if (*ptr == ' ')
+		{
+			if (arg.positive_sign == false)
+				arg.space_positive = true;
+		}
+		if (*ptr == '+')
+		{
+			arg.positive_sign = true;
+			arg.space_positive = false;
+		}
+		if (*ptr == 'l')
+		{
+			arg.long_modifier = true;
+		}
+		if (*ptr == '.')
+		{
+			ptr++;
+			arg.precision = ft_atoi(ptr);
+			while (ft_isdigit(*ptr) && *ptr != '\0')
+				ptr++;
+			ptr--;
 		}
 		ptr++;
 	}
 	*consumed = (int)(ptr - string) + 1;
-	return true;
+	return (arg);
 }
 
 int		ft_printf(const char *string, ...)
@@ -83,7 +114,7 @@ int		ft_printf(const char *string, ...)
 	{
 		if (*string == '%')
 		{
-			get_next_arg(string, &arg, &consumed);
+			arg = get_next_arg(string, &consumed);
 			string += consumed;
 			process_arg(&output, arg, list);
 		}
@@ -98,13 +129,50 @@ int		ft_printf(const char *string, ...)
 	return output.size;
 }
 
+void	append_n_chars(t_array *array, char c, size_t count)
+{
+	while (count-- != 0)
+		array_append(array, &c, 1);
+}
+
 void process_arg(t_array *output, t_arg arg, va_list list)
 {
+	size_t	conversion_length;
+	char	*new;
+
 	if (arg.token == 'd')
 	{
-		int d = va_arg(list, int);
-		char *new = ft_itoa(d);
-		array_append(output, new, ft_strlen(new));
+		if (arg.long_modifier)
+		{
+			long l = va_arg(list, long);
+			if (arg.space_positive && l >= 0)
+				array_append(output, " ", 1);
+			if (arg.positive_sign && l >= 0)
+				array_append(output, "+", 1);
+			new = ft_ltoa(l);
+			conversion_length = ft_strlen(new);
+			if (arg.precision > conversion_length)
+				append_n_chars(output, '0', arg.precision - conversion_length);
+			array_append(output, new, conversion_length);
+		}
+		else
+		{
+			int d = va_arg(list, int);
+			if (arg.space_positive && d >= 0)
+				array_append(output, " ", 1);
+			if (arg.positive_sign && d >= 0)
+				array_append(output, "+", 1);
+			if (d < 0)
+			{
+				array_append(output, "-", 1);
+				d *= -1;
+			}
+			new = ft_itoa(d);
+			conversion_length = ft_strlen(new);
+			if (arg.precision > conversion_length)
+				append_n_chars(output, '0', arg.precision - conversion_length);
+			array_append(output, new, ft_strlen(new));
+		}
 	}
 }
 

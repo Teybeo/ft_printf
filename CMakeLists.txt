@@ -8,6 +8,8 @@ set(SOURCES
     libft/ft_realloc.c
     libft/ft_strlen.c
     libft/ft_memcpy.c
+    libft/ft_memset.c
+    libft/ft_max.c
     libft/ft_ltoa.c
     libft/ft_itoa.c
     libft/ft_atoi.c

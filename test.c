@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <limits.h>
 
 int main()
 {
@@ -30,7 +31,16 @@ int main()
 //	printf("%D\n", 0xff11ff11ff88);
 //	ft_printf("%D\n", 280452758896520);
 //	printf("%D\n", 280452758896520);
-	ft_printf("%.123d testlol", 42);
+//	ft_printf("%.123d testlol", 42);
+	printf("%5d", -142);
+	puts("");
+	printf("%.5d", -142);
+	puts("\n-- MINE --");
+	ft_printf("%5d", -142);
+	puts("");
+	ft_printf("%.5d", -142);
+	puts("");
+
 //	foo("test %d lol", token_table);
 
 	return 0;

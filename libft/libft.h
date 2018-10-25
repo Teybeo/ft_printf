@@ -6,7 +6,7 @@
 /*   By: tdarchiv <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 12:49:52 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/04/11 14:13:10 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/25 12:35:29 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@ int				ft_isprint(int c);
 int				ft_isascii(int c);
 int				ft_toupper(int c);
 int				ft_tolower(int c);
+
+size_t			ft_max(size_t a, size_t b);
 
 void			*ft_memalloc(size_t size);
 void			ft_memdel(void **data);

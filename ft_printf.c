@@ -32,7 +32,7 @@ struct s_arg
 	bool positive_sign;
 	bool space_positive;
 	bool long_modifier;
-	int field_width;
+	int min_width;
 	size_t precision;
 //	ft_token fn;
 	char token;
@@ -67,30 +67,44 @@ t_arg get_next_arg(const char *string, int *consumed)
 			arg.token = 'd';
 			break;
 		}
-		if (*ptr == 'D')
+		else if (*ptr == 'D')
 		{
 			arg.token = 'd';
 			arg.long_modifier = true;
 			break;
 		}
-		if (*ptr == ' ')
+		else if (*ptr == ' ')
 		{
 			if (arg.positive_sign == false)
 				arg.space_positive = true;
 		}
-		if (*ptr == '+')
+		else if (*ptr == '+')
 		{
 			arg.positive_sign = true;
 			arg.space_positive = false;
 		}
-		if (*ptr == 'l')
+		else if (*ptr == 'l')
 		{
 			arg.long_modifier = true;
 		}
-		if (*ptr == '.')
+		else if (*ptr == '.')
 		{
 			ptr++;
 			arg.precision = ft_atoi(ptr);
+			while (ft_isdigit(*ptr) && *ptr != '\0')
+				ptr++;
+			ptr--;
+		}
+		else if (*ptr == '0')
+		{
+			arg.zero_padding = true;
+			while (*ptr == '0')
+				ptr++;
+			ptr--;
+		}
+		else if (ft_isdigit(*ptr))
+		{
+			arg.min_width = ft_atoi(ptr);
 			while (ft_isdigit(*ptr) && *ptr != '\0')
 				ptr++;
 			ptr--;
@@ -139,6 +153,7 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 {
 	size_t	conversion_length;
 	char	*new;
+	char	*temp;
 
 	if (arg.token == 'd')
 	{
@@ -154,24 +169,48 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 			if (arg.precision > conversion_length)
 				append_n_chars(output, '0', arg.precision - conversion_length);
 			array_append(output, new, conversion_length);
+			free(new);
 		}
 		else
 		{
+#if 1
+			int d = va_arg(list, int);
+			new = ft_itoa(d);
+			int is_neg = d < 0;
+			int has_sign_char = d < 0 || arg.space_positive || arg.positive_sign;
+			size_t itoa_len = ft_strlen(new);
+			size_t digit_count = itoa_len - is_neg;
+			ft_memcpy(new, new + (is_neg), digit_count);
+			size_t final_length = ft_max(arg.precision, digit_count) + has_sign_char;
+			temp = malloc(sizeof(char) * final_length);
+			if (digit_count < arg.precision)
+				ft_memset(temp, '0', final_length - digit_count);
+			if (has_sign_char)
+			{
+				if (arg.space_positive && !is_neg)
+					temp[0] = ' ';
+				else if (arg.positive_sign && !is_neg)
+					temp[0] = '+';
+				else if (is_neg)
+					temp[0] = '-';
+			}
+			ft_memcpy(temp + (final_length - digit_count), new, digit_count);
+			array_append(output, temp, final_length);
+#else
 			int d = va_arg(list, int);
 			if (arg.space_positive && d >= 0)
 				array_append(output, " ", 1);
 			if (arg.positive_sign && d >= 0)
 				array_append(output, "+", 1);
-			if (d < 0)
-			{
-				array_append(output, "-", 1);
-				d *= -1;
-			}
 			new = ft_itoa(d);
-			conversion_length = ft_strlen(new);
+			if (new[0] == '-')
+				array_append(output, "-", 1);
+			conversion_length = (size_t)ft_max(ft_strlen(new), arg.min_width);
 			if (arg.precision > conversion_length)
 				append_n_chars(output, '0', arg.precision - conversion_length);
 			array_append(output, new, ft_strlen(new));
+			free(new);
+#endif
 		}
 	}
 }

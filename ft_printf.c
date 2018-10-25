@@ -32,7 +32,7 @@ struct s_arg
 	bool positive_sign;
 	bool space_positive;
 	bool long_modifier;
-	int min_width;
+	size_t min_width;
 	size_t precision;
 //	ft_token fn;
 	char token;
@@ -180,21 +180,23 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 			int has_sign_char = d < 0 || arg.space_positive || arg.positive_sign;
 			size_t itoa_len = ft_strlen(new);
 			size_t digit_count = itoa_len - is_neg;
-			ft_memcpy(new, new + (is_neg), digit_count);
-			size_t final_length = ft_max(arg.precision, digit_count) + has_sign_char;
+			ft_memcpy(new, new + (is_neg), digit_count); // Remove - in string
+			size_t core_length = ft_max(arg.precision, digit_count) + has_sign_char;
+			size_t final_length = ft_max(arg.min_width, core_length);
 			temp = malloc(sizeof(char) * final_length);
 			if (digit_count < arg.precision)
-				ft_memset(temp, '0', final_length - digit_count);
+				ft_memset(temp + (final_length - core_length), '0', final_length - digit_count);
 			if (has_sign_char)
 			{
 				if (arg.space_positive && !is_neg)
-					temp[0] = ' ';
+					temp[(final_length - core_length)] = ' ';
 				else if (arg.positive_sign && !is_neg)
-					temp[0] = '+';
+					temp[(final_length - core_length)] = '+';
 				else if (is_neg)
-					temp[0] = '-';
+					temp[(final_length - core_length)] = '-';
 			}
 			ft_memcpy(temp + (final_length - digit_count), new, digit_count);
+			ft_memset(temp, ' ', final_length - core_length);
 			array_append(output, temp, final_length);
 #else
 			int d = va_arg(list, int);

@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <limits.h>
+#include <zconf.h>
 
 int main()
 {
@@ -32,15 +33,13 @@ int main()
 //	ft_printf("%D\n", 280452758896520);
 //	printf("%D\n", 280452758896520);
 //	ft_printf("%.123d testlol", 42);
-	printf("%5d", -142);
-	puts("");
-	printf("%.5d", -142);
+	int arg = -42;
+	char *format = "%07d";
+	printf(format, arg);
 	puts("\n-- MINE --");
-	ft_printf("%5d", -142);
+//	ft_printf("%10.4d", -42);
+	ft_printf(format, arg);
 	puts("");
-	ft_printf("%.5d", -142);
-	puts("");
-
 //	foo("test %d lol", token_table);
 
 	return 0;

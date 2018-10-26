@@ -36,6 +36,7 @@ struct s_arg
 	size_t precision;
 //	ft_token fn;
 	char token;
+	char plus_sign;
 };
 
 void consume_non_arg(const char *string, t_array *array, int *consumed);
@@ -75,13 +76,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 		}
 		else if (*ptr == ' ')
 		{
-			if (arg.positive_sign == false)
-				arg.space_positive = true;
+			if (arg.plus_sign != '+')
+				arg.plus_sign = ' ';
 		}
 		else if (*ptr == '+')
 		{
-			arg.positive_sign = true;
-			arg.space_positive = false;
+			arg.plus_sign = '+';
 		}
 		else if (*ptr == 'l')
 		{
@@ -160,10 +160,8 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		if (arg.long_modifier)
 		{
 			long l = va_arg(list, long);
-			if (arg.space_positive && l >= 0)
-				array_append(output, " ", 1);
-			if (arg.positive_sign && l >= 0)
-				array_append(output, "+", 1);
+			if (arg.plus_sign && l >= 0)
+				array_append(output, &arg.plus_sign, 1);
 			new = ft_ltoa(l);
 			conversion_length = ft_strlen(new);
 			if (arg.precision > conversion_length)
@@ -174,29 +172,33 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		else
 		{
 #if 1
+			size_t itoa_len;
 			int d = va_arg(list, int);
-			new = ft_itoa(d);
+
+			new = ft_itoa_sign(d, arg.plus_sign);
+			itoa_len = ft_strlen(new);
+
 			int is_neg = d < 0;
-			int has_sign_char = d < 0 || arg.space_positive || arg.positive_sign;
-			size_t itoa_len = ft_strlen(new);
-			size_t digit_count = itoa_len - is_neg;
-			ft_memcpy(new, new + (is_neg), digit_count); // Remove - in string
+			int has_sign_char = ft_isdigit(new[0]) == false;
+			size_t digit_count = itoa_len - has_sign_char;
+
+			ft_memcpy(new, new + has_sign_char, digit_count); // Remove sign in string
+
 			size_t core_length = ft_max(arg.precision, digit_count) + has_sign_char;
 			size_t final_length = ft_max(arg.min_width, core_length);
 			temp = malloc(sizeof(char) * final_length);
+			// Prepend 0
 			if (digit_count < arg.precision)
 				ft_memset(temp + (final_length - core_length), '0', final_length - digit_count);
 			if (has_sign_char)
 			{
-				if (arg.space_positive && !is_neg)
-					temp[(final_length - core_length)] = ' ';
-				else if (arg.positive_sign && !is_neg)
-					temp[(final_length - core_length)] = '+';
+				if (arg.plus_sign && !is_neg)
+					temp[(final_length - core_length)] = arg.plus_sign;
 				else if (is_neg)
 					temp[(final_length - core_length)] = '-';
 			}
 			ft_memcpy(temp + (final_length - digit_count), new, digit_count);
-			ft_memset(temp, ' ', final_length - core_length);
+			ft_memset(temp, '0', final_length - core_length);
 			array_append(output, temp, final_length);
 #else
 			int d = va_arg(list, int);

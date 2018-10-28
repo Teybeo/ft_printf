@@ -86,7 +86,7 @@ static void	*itoa_alloc_string_sign(int *digit_count, int nb, char plus_sign)
 	}
 	*digit_count = str_len;
 	str_len++;
-	if (nb > 0 && plus_sign)
+	if (nb > 0 && plus_sign == 0)
 		str_len--;
 	if (nb == 0)
 		str_len = 1;

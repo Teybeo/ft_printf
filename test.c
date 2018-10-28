@@ -27,16 +27,24 @@ int main()
 	test("%+.7d", 42);
 	test("% .7d", 42);
 	test("%.7d", 42);
-	test("%010.6d", 42);
+	test("%010.1d", 42);
+	test("%010.0d", 42);
+	test("%010.d", 42);
+	test("%.0d", 0);
 	return 0;
 }
 
 void test(char* format, int value)
 {
+	int ret_lib;
+	int ret_mine;
+
 	printf("TEST: %s, %d\n", format, value);
-	printf(format, value);
+	ret_lib = printf(format, value);
+	printf(", %d", ret_lib);
 	puts("");
-//	puts("-- MINE --");
-//	ft_printf(format, value);
-//	puts("\n");
+	puts("-- MINE --");
+	ret_mine = ft_printf(format, value);
+	printf(", %d", ret_mine);
+	puts("\n");
 }

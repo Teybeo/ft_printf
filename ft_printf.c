@@ -32,6 +32,7 @@ struct s_arg
 	bool positive_sign;
 	bool space_positive;
 	bool long_modifier;
+	bool has_precision;
 	size_t min_width;
 	size_t precision;
 //	ft_token fn;
@@ -91,6 +92,7 @@ t_arg get_next_arg(const char *string, int *consumed)
 		{
 			ptr++;
 			arg.precision = ft_atoi(ptr);
+			arg.has_precision = true;
 			while (ft_isdigit(*ptr) && *ptr != '\0')
 				ptr++;
 			ptr--;
@@ -181,7 +183,15 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 			int is_neg = d < 0;
 			int has_sign_char = ft_isdigit(new[0]) == false;
 			size_t digit_count = itoa_len - has_sign_char;
-
+			if (arg.min_width > 0 && arg.zero_padding && arg.has_precision == false)
+			{
+				arg.precision = arg.min_width - has_sign_char;
+				arg.min_width = 0;
+				arg.zero_padding = false;
+			}
+			// Precision forces padding with ' ' instead of '0'
+			if (arg.has_precision && arg.zero_padding)
+				arg.zero_padding = false;
 			ft_memcpy(new, new + has_sign_char, digit_count); // Remove sign in string
 
 			size_t core_length = ft_max(arg.precision, digit_count) + has_sign_char;
@@ -192,13 +202,11 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 				ft_memset(temp + (final_length - core_length), '0', final_length - digit_count);
 			if (has_sign_char)
 			{
-				if (arg.plus_sign && !is_neg)
-					temp[(final_length - core_length)] = arg.plus_sign;
-				else if (is_neg)
-					temp[(final_length - core_length)] = '-';
+				int sign_idx = (final_length - core_length);
+				temp[sign_idx] = (is_neg) ? '-' : arg.plus_sign;
 			}
 			ft_memcpy(temp + (final_length - digit_count), new, digit_count);
-			ft_memset(temp, '0', final_length - core_length);
+			ft_memset(temp, arg.zero_padding ? '0' : ' ', final_length - core_length);
 			array_append(output, temp, final_length);
 #else
 			int d = va_arg(list, int);

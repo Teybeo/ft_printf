@@ -47,6 +47,7 @@ void process_arg(t_array *pArray, t_arg arg, va_list list);
 void print_int32(t_array *output, t_arg arg, va_list list);
 void print_int64(t_array *output, t_arg arg, va_list list);
 void print_uint32(t_array *output, t_arg arg, va_list list);
+void print_uint64(t_array *output, t_arg arg, va_list list);
 
 int		get_first_index(const char *string, char c)
 {
@@ -170,7 +171,9 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 	}
 	else if (arg.token == 'u')
 	{
-//		if (arg.long_modifier)
+		if (arg.long_modifier)
+			print_uint64(output, arg, list);
+		else
 			print_uint32(output, arg, list);
 	}
 }
@@ -179,11 +182,10 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 {
 	int		is_neg;
 	int		has_sign_char;
-	int		blank_count;
-	int		zero_count;
+	size_t	blank_count;
+	size_t	zero_count;
 	size_t	digit_count;
 
-	itoa_len = ft_strlen(itoa);
 	is_neg = itoa[0] == '-';
 	has_sign_char = ft_isdigit(itoa[0]) == false;
 	digit_count = itoa_len - has_sign_char;
@@ -193,10 +195,8 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 		arg.precision = arg.min_width - has_sign_char;
 		arg.min_width = 0;
 	}
-	zero_count = (int)(arg.precision - digit_count);
-	zero_count = (zero_count > 0) ? zero_count : 0;
-	blank_count = (int) (arg.min_width - (itoa_len + zero_count));
-	blank_count = (blank_count > 0) ? blank_count : 0;
+	zero_count =  ft_max(arg.precision - digit_count, 0);
+	blank_count = ft_max(arg.min_width - (itoa_len + zero_count), 0);
 //	printf("\n[zero_count: %d]\n", zero_count);
 //	printf("[blank_count: %d]\n", blank_count);
 	if (arg.left_adjust == false)
@@ -223,7 +223,7 @@ void print_int64(t_array *output, t_arg arg, va_list list)
 		return;
 	}
 	ltoa = ft_ltoa_sign(l, arg.plus_sign);
-	print_integer(output, arg, ltoa);
+	print_integer(output, arg, ltoa, ft_strlen(ltoa));
 	free(ltoa);
 }
 
@@ -241,7 +241,7 @@ void print_int32(t_array *output, t_arg arg, va_list list)
 		return;
 	}
 	itoa = ft_itoa_sign(d, arg.plus_sign);
-	print_integer(output, arg, itoa);
+	print_integer(output, arg, itoa, ft_strlen(itoa));
 	free(itoa);
 }
 
@@ -259,8 +259,26 @@ void print_uint32(t_array *output, t_arg arg, va_list list)
 		return;
 	}
 	utoa = ft_ltoa_sign(u, arg.plus_sign);
-	print_integer(output, arg, utoa);
+	print_integer(output, arg, utoa, ft_strlen(utoa));
 	free(utoa);
+}
+
+void print_uint64(t_array *output, t_arg arg, va_list list)
+{
+	char			*lutoa;
+	unsigned long int	lu;
+
+	lu = va_arg(list, unsigned long int);
+	// If precision is 0 and value is 0, dont print 0 but still print prefix
+	if (lu == 0 && arg.has_precision && arg.precision == 0)
+	{
+		if (arg.plus_sign)
+			array_append(output, &arg.plus_sign, 1);
+		return;
+	}
+	lutoa = ft_lutoa_sign(lu, arg.plus_sign);
+	print_integer(output, arg, lutoa, ft_strlen(lutoa));
+	free(lutoa);
 }
 
 void consume_non_arg(const char *string, t_array *array, int *consumed)

@@ -32,7 +32,12 @@ int main()
 	test("%010.d", 42);
 	test("%+.0d nothing", 0);
 
-	test("%-+10.4d", 42);
+//	test("%-+10.4d", 42);
+	test("%-05d", 42);
+
+	printf("%lu\n", -12345612220);
+	ft_printf("%lu\n", -12345612220);
+//	test("%lu", -12345612220U);
 
 	return 0;
 }

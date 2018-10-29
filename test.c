@@ -30,9 +30,10 @@ int main()
 	test("%010.1d", 42);
 	test("%010.0d", 42);
 	test("%010.d", 42);
-	test("%.0d", 0);
-	
-	ft_printf("toto%.0d et %+.i et  %   .0D !!!", 0, 0, 0);
+	test("%+.0d nothing", 0);
+
+	test("%-+10.4d", 42);
+
 	return 0;
 }
 

@@ -44,6 +44,9 @@ void consume_non_arg(const char *string, t_array *array, int *consumed);
 
 void process_arg(t_array *pArray, t_arg arg, va_list list);
 
+void print_int32(t_array *output, t_arg arg, va_list list);
+void print_int64(t_array *output, t_arg arg, va_list list);
+void print_uint32(t_array *output, t_arg arg, va_list list);
 
 int		get_first_index(const char *string, char c)
 {
@@ -64,15 +67,16 @@ t_arg get_next_arg(const char *string, int *consumed)
 	ptr = string;
 	while (*ptr != '\0')
 	{
-		if (*ptr == 'd' || *ptr == 'i')
+		if (*ptr == 'd' || *ptr == 'i' || *ptr == 'D')
 		{
 			arg.token = 'd';
+			arg.long_modifier |= (*ptr == 'D');
 			break;
 		}
-		else if (*ptr == 'D')
+		else if (*ptr == 'u' || *ptr == 'U')
 		{
-			arg.token = 'd';
-			arg.long_modifier = true;
+			arg.token = 'u';
+			arg.long_modifier |= (*ptr == 'U');
 			break;
 		}
 		else if (*ptr == ' ')
@@ -153,62 +157,106 @@ void	append_n_chars(t_array *array, char c, size_t count)
 
 void process_arg(t_array *output, t_arg arg, va_list list)
 {
-	size_t	conversion_length;
-	char	*new;
-	char	*temp;
-
 	if (arg.token == 'd')
 	{
 		if (arg.long_modifier)
-		{
-			long l = va_arg(list, long);
-			if (arg.plus_sign && l >= 0)
-				array_append(output, &arg.plus_sign, 1);
-			new = ft_ltoa(l);
-			conversion_length = ft_strlen(new);
-			if (arg.precision > conversion_length)
-				append_n_chars(output, '0', arg.precision - conversion_length);
-			array_append(output, new, conversion_length);
-			free(new);
-		}
+			print_int64(output, arg, list);
 		else
-		{
-			size_t itoa_len;
-			int d = va_arg(list, int);
-
-			new = ft_itoa_sign(d, arg.plus_sign);
-			itoa_len = ft_strlen(new);
-
-			int is_neg = d < 0;
-			int has_sign_char = ft_isdigit(new[0]) == false;
-			size_t digit_count = itoa_len - has_sign_char;
-			if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
-			{
-				arg.precision = arg.min_width - has_sign_char;
-				arg.min_width = 0;
-				arg.pad_with_zero = false;
-			}
-			// Precision forces padding with ' ' instead of '0'
-			if (arg.has_precision && arg.pad_with_zero)
-				arg.pad_with_zero = false;
-			ft_memcpy(new, new + has_sign_char, digit_count); // Remove sign in string
-
-			size_t core_length = ft_max(arg.precision, digit_count) + has_sign_char;
-			size_t final_length = ft_max(arg.min_width, core_length);
-			temp = malloc(sizeof(char) * final_length);
-			// Prepend 0
-			if (digit_count < arg.precision)
-				ft_memset(temp + (final_length - core_length), '0', final_length - digit_count);
-			if (has_sign_char)
-			{
-				int sign_idx = (final_length - core_length);
-				temp[sign_idx] = (is_neg) ? '-' : arg.plus_sign;
-			}
-			ft_memcpy(temp + (final_length - digit_count), new, digit_count);
-			ft_memset(temp, arg.pad_with_zero ? '0' : ' ', final_length - core_length);
-			array_append(output, temp, final_length);
-		}
+			print_int32(output, arg, list);
 	}
+	else if (arg.token == 'u')
+	{
+//		if (arg.long_modifier)
+			print_uint32(output, arg, list);
+	}
+}
+
+void print_integer(t_array *output, t_arg arg, char *itoa)
+{
+	int		is_neg;
+	int		has_sign_char;
+	size_t	itoa_len;
+	size_t	digit_count;
+	size_t	core_length;
+	size_t	final_length;
+	char	*temp;
+
+	itoa_len = ft_strlen(itoa);
+	is_neg = itoa[0] == '-';
+	has_sign_char = ft_isdigit(itoa[0]) == false;
+	digit_count = itoa_len - has_sign_char;
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width - has_sign_char;
+		arg.min_width = 0;
+		arg.pad_with_zero = false;
+	}
+	// Precision forces padding with ' ' instead of '0'
+	if (arg.has_precision && arg.pad_with_zero)
+		arg.pad_with_zero = false;
+	ft_memcpy(itoa, itoa + has_sign_char, digit_count); // Remove sign in string
+	core_length = ft_max(arg.precision, digit_count) + has_sign_char;
+	final_length = ft_max(arg.min_width, core_length);
+	temp = malloc(sizeof(char) * final_length);
+	// Prepend 0
+	if (digit_count < arg.precision)
+		ft_memset(temp + (final_length - core_length), '0', final_length - digit_count);
+	if (has_sign_char)
+		temp[final_length - core_length] = (is_neg) ? '-' : arg.plus_sign;
+	ft_memcpy(temp + (final_length - digit_count), itoa, digit_count);
+	ft_memset(temp, arg.pad_with_zero ? '0' : ' ', final_length - core_length);
+	array_append(output, temp, final_length);
+}
+
+void print_int64(t_array *output, t_arg arg, va_list list)
+{
+	char	*ltoa;
+	long	l;
+
+	l = va_arg(list, long);
+	// If precision is 0 and value is 0, dont print 0 but still print prefix
+	if (l == 0 && arg.has_precision && arg.precision == 0)
+	{
+		if (arg.plus_sign)
+			array_append(output, &arg.plus_sign, 1);
+		return;
+	}
+	ltoa = ft_ltoa_sign(l, arg.plus_sign);
+	print_integer(output, arg, ltoa);
+}
+
+void print_int32(t_array *output, t_arg arg, va_list list)
+{
+	char	*itoa;
+	int		d;
+
+	d = va_arg(list, int);
+	// If precision is 0 and value is 0, dont print 0 but still print prefix
+	if (d == 0 && arg.has_precision && arg.precision == 0)
+	{
+		if (arg.plus_sign)
+			array_append(output, &arg.plus_sign, 1);
+		return;
+	}
+	itoa = ft_itoa_sign(d, arg.plus_sign);
+	print_integer(output, arg, itoa);
+}
+
+void print_uint32(t_array *output, t_arg arg, va_list list)
+{
+	char			*utoa;
+	unsigned int	u;
+
+	u = va_arg(list, unsigned int);
+	// If precision is 0 and value is 0, dont print 0 but still print prefix
+	if (u == 0 && arg.has_precision && arg.precision == 0)
+	{
+		if (arg.plus_sign)
+			array_append(output, &arg.plus_sign, 1);
+		return;
+	}
+	utoa = ft_ltoa_sign(u, arg.plus_sign);
+	print_integer(output, arg, utoa);
 }
 
 void consume_non_arg(const char *string, t_array *array, int *consumed)

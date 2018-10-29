@@ -31,6 +31,8 @@ int main()
 	test("%010.0d", 42);
 	test("%010.d", 42);
 	test("%.0d", 0);
+	
+	ft_printf("toto%.0d et %+.i et  %   .0D !!!", 0, 0, 0);
 	return 0;
 }
 

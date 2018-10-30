@@ -29,8 +29,6 @@ struct s_arg
 	bool alternate_form;
 	bool left_adjust; // Default to right adjust
 	bool pad_with_zero; // Default to blank-padding
-	bool positive_sign;
-	bool space_positive;
 	bool long_modifier;
 	bool has_precision;
 	size_t min_width;
@@ -40,14 +38,14 @@ struct s_arg
 	char plus_sign;
 };
 
+void process_arg(t_array *output, t_arg arg, va_list list);
 void consume_non_arg(const char *string, t_array *array, int *consumed);
-
-void process_arg(t_array *pArray, t_arg arg, va_list list);
 
 void print_int32(t_array *output, t_arg arg, va_list list);
 void print_int64(t_array *output, t_arg arg, va_list list);
 void print_uint32(t_array *output, t_arg arg, va_list list);
 void print_uint64(t_array *output, t_arg arg, va_list list);
+void print_percent(t_array *output, t_arg arg);
 
 int		get_first_index(const char *string, char c)
 {
@@ -72,12 +70,20 @@ t_arg get_next_arg(const char *string, int *consumed)
 		{
 			arg.token = 'd';
 			arg.long_modifier |= (*ptr == 'D');
+			ptr++;
 			break;
 		}
 		else if (*ptr == 'u' || *ptr == 'U')
 		{
 			arg.token = 'u';
 			arg.long_modifier |= (*ptr == 'U');
+			ptr++;
+			break;
+		}
+		else if (*ptr == '%')
+		{
+			arg.token = '%';
+			ptr++;
 			break;
 		}
 		else if (*ptr == ' ')
@@ -92,8 +98,13 @@ t_arg get_next_arg(const char *string, int *consumed)
 		else if (*ptr == '-')
 		{
 			arg.left_adjust = true;
+			arg.pad_with_zero = false;
 		}
 		else if (*ptr == 'l')
+		{
+			arg.long_modifier = true;
+		}
+		else if (*ptr == 'z')
 		{
 			arg.long_modifier = true;
 		}
@@ -108,7 +119,8 @@ t_arg get_next_arg(const char *string, int *consumed)
 		}
 		else if (*ptr == '0')
 		{
-			arg.pad_with_zero = true;
+			if (arg.left_adjust == false)
+				arg.pad_with_zero = true;
 			while (*ptr == '0')
 				ptr++;
 			ptr--;
@@ -122,7 +134,7 @@ t_arg get_next_arg(const char *string, int *consumed)
 		}
 		ptr++;
 	}
-	*consumed = (int)(ptr - string) + 1;
+	*consumed = (int)(ptr - string);
 	return (arg);
 }
 
@@ -139,6 +151,7 @@ int		ft_printf(const char *string, ...)
 	{
 		if (*string == '%')
 		{
+			string++;
 			arg = get_next_arg(string, &consumed);
 			string += consumed;
 			process_arg(&output, arg, list);
@@ -154,9 +167,9 @@ int		ft_printf(const char *string, ...)
 	return output.size;
 }
 
-void	append_n_chars(t_array *array, char c, size_t count)
+void	append_n_chars(t_array *array, char c, int i)
 {
-	while (count-- != 0)
+	while (i-- > 0)
 		array_append(array, &c, 1);
 }
 
@@ -176,6 +189,19 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		else
 			print_uint32(output, arg, list);
 	}
+	else if (arg.token == '%')
+	{
+		print_percent(output, arg);
+	}
+}
+
+void print_percent(t_array *output, t_arg arg)
+{
+	if (arg.left_adjust == false)
+		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
+	array_append(output, "%", 1);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', arg.min_width - 1);
 }
 
 void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)

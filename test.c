@@ -32,7 +32,7 @@ int main()
 	test("%%", 0);
 
 //	test("%-+10.4d", 42);
-	test("%hhd", -129);
+	test_UL("%+u", 4294967295UL);
 	test_UL("%zu", -145612220UL);
 	test("titi % +---12.5% et%%%0004% et %+1%", 0);
 //	printf("%lu\n", -12345612220);

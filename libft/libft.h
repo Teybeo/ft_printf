@@ -6,7 +6,7 @@
 /*   By: tdarchiv <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 12:49:52 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/30 10:10:20 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/30 10:18:53 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ char			*ft_itoa(int n);
 char			*ft_itoa_sign(int n, char plus_sign);
 char			*ft_ltoa(long nb);
 char			*ft_ltoa_sign(long nb, char plus_sign);
-char			*ft_lutoa_sign(unsigned long nb, char plus_sign);
+char			*ft_ultoa_sign(unsigned long nb, char plus_sign);
 char			*ft_itoa_base(int nb, char const *base, int base_len);
 
 int				ft_isalnum(int c);

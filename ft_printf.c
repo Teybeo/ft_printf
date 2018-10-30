@@ -29,6 +29,8 @@ struct s_arg
 	bool alternate_form;
 	bool left_adjust; // Default to right adjust
 	bool pad_with_zero; // Default to blank-padding
+	bool short_modifier;
+	bool double_short_modifier;
 	bool long_modifier;
 	bool has_precision;
 	size_t min_width;
@@ -46,6 +48,15 @@ void print_int64(t_array *output, t_arg arg, va_list list);
 void print_uint32(t_array *output, t_arg arg, va_list list);
 void print_uint64(t_array *output, t_arg arg, va_list list);
 void print_percent(t_array *output, t_arg arg);
+
+void print_int(t_array *output, t_arg arg, long l);
+
+/*
+** If precision is 0 and value is 0, dont print 0 but still print prefix
+*/
+
+void print_uint(t_array *output, t_arg arg, unsigned long l)
+;
 
 int		get_first_index(const char *string, char c)
 {
@@ -77,6 +88,7 @@ t_arg get_next_arg(const char *string, int *consumed)
 		{
 			arg.token = 'u';
 			arg.long_modifier |= (*ptr == 'U');
+			arg.plus_sign = false;
 			ptr++;
 			break;
 		}
@@ -100,9 +112,18 @@ t_arg get_next_arg(const char *string, int *consumed)
 			arg.left_adjust = true;
 			arg.pad_with_zero = false;
 		}
-		else if (*ptr == 'l')
+		else if (*ptr == 'l' || *ptr == 'j')
 		{
 			arg.long_modifier = true;
+		}
+		else if (*ptr == 'h')
+		{
+			if (arg.short_modifier)
+			{
+				arg.double_short_modifier = true;
+				arg.short_modifier = false;
+			}
+			arg.short_modifier = true;
 		}
 		else if (*ptr == 'z')
 		{
@@ -175,19 +196,31 @@ void	append_n_chars(t_array *array, char c, int i)
 
 void process_arg(t_array *output, t_arg arg, va_list list)
 {
+	long l;
+	unsigned long ul;
 	if (arg.token == 'd')
 	{
+		l = va_arg(list, long);
 		if (arg.long_modifier)
-			print_int64(output, arg, list);
+			print_int(output, arg, l);
+		else if (arg.double_short_modifier)
+			print_int(output, arg, (char)l);
+		else if (arg.short_modifier)
+			print_int(output, arg, (short)l);
 		else
-			print_int32(output, arg, list);
+			print_int(output, arg, (int)l);
 	}
 	else if (arg.token == 'u')
 	{
+		ul = va_arg(list, unsigned long);
 		if (arg.long_modifier)
-			print_uint64(output, arg, list);
+			print_uint(output, arg, ul);
+		else if (arg.double_short_modifier)
+			print_uint(output, arg, (unsigned char)ul);
+		else if (arg.short_modifier)
+			print_uint(output, arg, (unsigned short)ul);
 		else
-			print_uint32(output, arg, list);
+			print_uint(output, arg, (unsigned int)ul);
 	}
 	else if (arg.token == '%')
 	{
@@ -235,13 +268,14 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 		append_n_chars(output, ' ', blank_count);
 }
 
-void print_int64(t_array *output, t_arg arg, va_list list)
+/*
+** If precision is 0 and value is 0, dont print 0 but still print prefix
+*/
+
+void print_int(t_array *output, t_arg arg, long l)
 {
 	char	*ltoa;
-	long	l;
 
-	l = va_arg(list, long);
-	// If precision is 0 and value is 0, dont print 0 but still print prefix
 	if (l == 0 && arg.has_precision && arg.precision == 0)
 	{
 		if (arg.plus_sign)
@@ -253,58 +287,23 @@ void print_int64(t_array *output, t_arg arg, va_list list)
 	free(ltoa);
 }
 
-void print_int32(t_array *output, t_arg arg, va_list list)
-{
-	char	*itoa;
-	int		d;
+/*
+** If precision is 0 and value is 0, dont print 0 but still print prefix
+*/
 
-	d = va_arg(list, int);
-	// If precision is 0 and value is 0, dont print 0 but still print prefix
-	if (d == 0 && arg.has_precision && arg.precision == 0)
+void print_uint(t_array *output, t_arg arg, unsigned long l)
+{
+	char	*ultoa;
+
+	if (l == 0 && arg.has_precision && arg.precision == 0)
 	{
 		if (arg.plus_sign)
 			array_append(output, &arg.plus_sign, 1);
 		return;
 	}
-	itoa = ft_itoa_sign(d, arg.plus_sign);
-	print_integer(output, arg, itoa, ft_strlen(itoa));
-	free(itoa);
-}
-
-void print_uint32(t_array *output, t_arg arg, va_list list)
-{
-	char			*utoa;
-	unsigned int	u;
-
-	u = va_arg(list, unsigned int);
-	// If precision is 0 and value is 0, dont print 0 but still print prefix
-	if (u == 0 && arg.has_precision && arg.precision == 0)
-	{
-		if (arg.plus_sign)
-			array_append(output, &arg.plus_sign, 1);
-		return;
-	}
-	utoa = ft_ltoa_sign(u, arg.plus_sign);
-	print_integer(output, arg, utoa, ft_strlen(utoa));
-	free(utoa);
-}
-
-void print_uint64(t_array *output, t_arg arg, va_list list)
-{
-	char			*lutoa;
-	unsigned long int	lu;
-
-	lu = va_arg(list, unsigned long int);
-	// If precision is 0 and value is 0, dont print 0 but still print prefix
-	if (lu == 0 && arg.has_precision && arg.precision == 0)
-	{
-		if (arg.plus_sign)
-			array_append(output, &arg.plus_sign, 1);
-		return;
-	}
-	lutoa = ft_lutoa_sign(lu, arg.plus_sign);
-	print_integer(output, arg, lutoa, ft_strlen(lutoa));
-	free(lutoa);
+	ultoa = ft_ultoa_sign(l, arg.plus_sign);
+	print_integer(output, arg, ultoa, ft_strlen(ultoa));
+	free(ultoa);
 }
 
 void consume_non_arg(const char *string, t_array *array, int *consumed)

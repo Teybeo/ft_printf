@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/09 19:36:35 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/30 10:10:20 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/30 10:18:53 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ static void	*lutoa_alloc_string_sign(int *digit_count, unsigned long nb, char pl
 	return (temp);
 }
 
-char		*ft_lutoa_sign(unsigned long nb, char plus_sign)
+char		*ft_ultoa_sign(unsigned long nb, char plus_sign)
 {
 	unsigned long	number;
 	unsigned long	diviseur;

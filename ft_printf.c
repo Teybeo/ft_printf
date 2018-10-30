@@ -58,6 +58,8 @@ void print_int(t_array *output, t_arg arg, long l);
 void print_uint(t_array *output, t_arg arg, unsigned long l)
 ;
 
+void print_octal(t_array *output, t_arg arg, unsigned long ul);
+
 int		get_first_index(const char *string, char c)
 {
 	int	i;
@@ -92,7 +94,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 			ptr++;
 			break;
 		}
-//		else if (*ptr == 'o')
+		else if (*ptr == 'o')
+		{
+			arg.token = 'o';
+			ptr++;
+			break;
+		}
 		else if (*ptr == '%')
 		{
 			arg.token = '%';
@@ -223,10 +230,26 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		else
 			print_uint(output, arg, (unsigned int)ul);
 	}
+	else if (arg.token == 'o')
+	{
+		ul = va_arg(list, unsigned long);
+		if (arg.long_modifier)
+			print_octal(output, arg, ul);
+		else if (arg.double_short_modifier)
+			print_octal(output, arg, (unsigned char)ul);
+		else if (arg.short_modifier)
+			print_octal(output, arg, (unsigned short)ul);
+		else
+			print_octal(output, arg, (unsigned int)ul);
+	}
 	else if (arg.token == '%')
 	{
 		print_percent(output, arg);
 	}
+}
+
+void print_octal(t_array *output, t_arg arg, unsigned long ul)
+{
 }
 
 void print_percent(t_array *output, t_arg arg)

@@ -31,23 +31,29 @@ int main()
 	test("%+.0d nothing", 0);
 	test("%%", 0);
 
-	test("%d", 0);
-	test("%5d", 0);
-	test("%.0d", 0);
-	test("%.d", 0);
-	test("%5.0d", 0);
+	test("%o", 42);
+	test("%5o", 42);
+	test("%.0o", 42);
+	test("%.o", 42);
+	test("%5.0o", 42);
 
-	test("%+d", 0);
-	test("%+5d", 0);
-	test("%+.0d", 0);
-	test("%+.d", 0);
-	test("%+5.0d", 0);
+	test("%+o", 42);
+	test("%+5o", 42);
+	test("%+.0o", 42);
+	test("%+.o", 42);
+	test("%+5.0o", 42);
 
-	test("%0+d", 0);
-	test("%0+5d", 0);
-	test("%0+.0d", 0);
-	test("%0+.d", 0);
-	test("%0+5.0d", 0);
+	test("% o", 42);
+	test("% 5o", 42);
+	test("% .0o", 42);
+	test("% .o", 42);
+	test("% 5.0o", 42);
+
+	test("%0+o", 42);
+	test("%0+5o", 42);
+	test("%0+.0o", 42);
+	test("%0+.o", 42);
+	test("%0+5.0o", 42);
 
 //	printf("%lu\n", -12345612220);
 //	ft_printf("%lu\n", -12345612220);

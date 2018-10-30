@@ -92,6 +92,7 @@ t_arg get_next_arg(const char *string, int *consumed)
 			ptr++;
 			break;
 		}
+//		else if (*ptr == 'o')
 		else if (*ptr == '%')
 		{
 			arg.token = '%';
@@ -246,8 +247,8 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 	size_t	digit_count;
 
 	is_neg = itoa[0] == '-';
-	has_sign_char = ft_isdigit(itoa[0]) == false;
-	digit_count = itoa_len - has_sign_char;
+	has_sign_char = ft_isdigit(itoa[0]) == false && (itoa[0] != '\0');
+	digit_count = ft_max(itoa_len - has_sign_char, 0);
 	ft_memcpy(itoa, itoa + has_sign_char, digit_count);
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
 	{
@@ -263,26 +264,22 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 	if (has_sign_char)
 		array_append(output, (is_neg) ? "-" : &arg.plus_sign, 1);
 	append_n_chars(output, '0', zero_count);
-	array_append(output, itoa, itoa_len - has_sign_char);
+	array_append(output, itoa, digit_count);
 	if (arg.left_adjust)
 		append_n_chars(output, ' ', blank_count);
 }
 
 /*
-** If precision is 0 and value is 0, dont print 0 but still print prefix
+** If working precision is 0 and value is 0, dont print 0 but still print prefix
 */
 
 void print_int(t_array *output, t_arg arg, long l)
 {
 	char	*ltoa;
 
-	if (l == 0 && arg.has_precision && arg.precision == 0)
-	{
-		if (arg.plus_sign)
-			array_append(output, &arg.plus_sign, 1);
-		return;
-	}
 	ltoa = ft_ltoa_sign(l, arg.plus_sign);
+	if (l == 0 && arg.has_precision && arg.precision == 0)
+		ltoa[arg.plus_sign != 0] = '\0';
 	print_integer(output, arg, ltoa, ft_strlen(ltoa));
 	free(ltoa);
 }

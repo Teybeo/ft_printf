@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/09 18:37:44 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/30 10:10:20 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/10/30 16:16:34 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ t_array	array_create(size_t elem_size, size_t count)
 
 void	array_append(t_array *vec, void *data, size_t count)
 {
-	assert(count > 0);
+//	assert(count > 0);
+	if (count == 0)
+		return ;
 	if ((vec->size + count) > vec->capacity)
 	{
 		vec->data = ft_realloc(vec->data,

@@ -55,6 +55,9 @@ int main()
 	test("%0+.o", 42);
 	test("%0+5.0o", 42);
 
+	test("%-#24O", 12);
+	test_UL("%-#24O", 12);
+
 //	printf("%lu\n", -12345612220);
 //	ft_printf("%lu\n", -12345612220);
 //	test("%lu", -12345612220U);
@@ -64,16 +67,15 @@ int main()
 
 void test(char* format, int value)
 {
-	int ret_lib;
-	int ret_mine;
+	int ret;
 
 	printf("TEST: %s, %d\n", format, value);
-	ret_lib = printf(format, value);
-	printf(", %d", ret_lib);
+	ret = ft_printf(format, value);
+	printf(", %d", ret);
 	puts("");
-	puts("-- MINE --");
-	ret_mine = ft_printf(format, value);
-	printf(", %d", ret_mine);
+	puts("-- LIB --");
+	ret = printf(format, value);
+	printf(", %d", ret);
 	puts("\n");
 }
 

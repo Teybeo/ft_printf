@@ -43,22 +43,12 @@ struct s_arg
 void process_arg(t_array *output, t_arg arg, va_list list);
 void consume_non_arg(const char *string, t_array *array, int *consumed);
 
-void print_int32(t_array *output, t_arg arg, va_list list);
-void print_int64(t_array *output, t_arg arg, va_list list);
-void print_uint32(t_array *output, t_arg arg, va_list list);
-void print_uint64(t_array *output, t_arg arg, va_list list);
+void print_int(t_array *output, t_arg arg, long l);
+void print_octal(t_array *output, t_arg arg, unsigned long ul);
+void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
 
-void print_int(t_array *output, t_arg arg, long l);
 
-/*
-** If precision is 0 and value is 0, dont print 0 but still print prefix
-*/
-
-void print_uint(t_array *output, t_arg arg, unsigned long l)
-;
-
-void print_octal(t_array *output, t_arg arg, unsigned long ul);
 
 int		get_first_index(const char *string, char c)
 {
@@ -94,9 +84,10 @@ t_arg get_next_arg(const char *string, int *consumed)
 			ptr++;
 			break;
 		}
-		else if (*ptr == 'o')
+		else if (*ptr == 'o' || (*ptr == 'O'))
 		{
 			arg.token = 'o';
+			arg.long_modifier |= (*ptr == 'O');
 			ptr++;
 			break;
 		}
@@ -136,6 +127,10 @@ t_arg get_next_arg(const char *string, int *consumed)
 		else if (*ptr == 'z')
 		{
 			arg.long_modifier = true;
+		}
+		else if (*ptr == '#')
+		{
+			arg.alternate_form = true;
 		}
 		else if (*ptr == '.')
 		{
@@ -248,17 +243,32 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 	}
 }
 
-void print_octal(t_array *output, t_arg arg, unsigned long ul)
+void print_octal(t_array *output, t_arg arg, unsigned long o)
 {
-}
+	char	*otoa;
+	int		blank_count;
+	int		zero_count;
+	size_t	otoa_len;
 
-void print_percent(t_array *output, t_arg arg)
-{
+	otoa = ft_otoa(o);
+
+	otoa_len = ft_strlen(otoa);
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width - arg.alternate_form;
+		arg.min_width = 0;
+	}
+	zero_count = ft_max(arg.precision - otoa_len, 0);
+	blank_count = ft_max(arg.min_width - (otoa_len + zero_count), 0);
+	blank_count -= arg.alternate_form;
 	if (arg.left_adjust == false)
-		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
-	array_append(output, "%", 1);
+		append_n_chars(output, ' ', blank_count);
+	if (arg.alternate_form && o > 0)
+		array_append(output, "0", 1);
+	append_n_chars(output, '0', zero_count);
+	array_append(output, otoa, otoa_len);
 	if (arg.left_adjust)
-		append_n_chars(output, ' ', arg.min_width - 1);
+		append_n_chars(output, ' ', blank_count);
 }
 
 void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
@@ -324,6 +334,15 @@ void print_uint(t_array *output, t_arg arg, unsigned long l)
 	ultoa = ft_ultoa_sign(l, arg.plus_sign);
 	print_integer(output, arg, ultoa, ft_strlen(ultoa));
 	free(ultoa);
+}
+
+void print_percent(t_array *output, t_arg arg)
+{
+	if (arg.left_adjust == false)
+		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
+	array_append(output, "%", 1);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', arg.min_width - 1);
 }
 
 void consume_non_arg(const char *string, t_array *array, int *consumed)

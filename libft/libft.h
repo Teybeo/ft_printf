@@ -54,6 +54,7 @@ char			*ft_itoa(int n);
 char			*ft_itoa_sign(int n, char plus_sign);
 char			*ft_ltoa(long nb);
 char			*ft_ltoa_sign(long nb, char plus_sign);
+char			*ft_otoa(unsigned long nb);
 char			*ft_ultoa_sign(unsigned long nb, char plus_sign);
 char			*ft_itoa_base(int nb, char const *base, int base_len);
 

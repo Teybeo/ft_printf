@@ -31,9 +31,6 @@ t_array	array_create(size_t elem_size, size_t count)
 
 void	array_append(t_array *vec, void *data, size_t count)
 {
-//	assert(count > 0);
-	if (count == 0)
-		return ;
 	if ((vec->size + count) > vec->capacity)
 	{
 		vec->data = ft_realloc(vec->data,

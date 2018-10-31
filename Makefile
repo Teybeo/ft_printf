@@ -1,36 +1,47 @@
-NAME = libftprintf.a
+NAME := libftprintf.a
 
 FILES += ft_printf.c
-FILES += libft/array.c
-FILES += libft/ft_strlen.c
-FILES += libft/ft_memcpy.c
-FILES += libft/ft_memset.c
-FILES += libft/ft_max.c
-FILES += libft/ft_realloc.c
-FILES += libft/ft_atoi.c
-FILES += libft/ft_itoa.c
-FILES += libft/ft_ltoa.c
-FILES += libft/ft_isdigit.c
-FILES += libft/ft_putchar_fd.c
-FILES += libft/ft_putnbr_fd.c
 
-OBJS = $(FILES:.c=.o)
+LIB_FILES += array.c
+LIB_FILES += ft_strlen.c
+LIB_FILES += ft_memcpy.c
+LIB_FILES += ft_memset.c
+LIB_FILES += ft_max.c
+LIB_FILES += ft_realloc.c
+LIB_FILES += ft_atoi.c
+LIB_FILES += ft_itoa.c
+LIB_FILES += ft_ltoa.c
+LIB_FILES += ft_otoa.c
+LIB_FILES += ft_isdigit.c
+LIB_FILES += ft_putchar_fd.c
+LIB_FILES += ft_putnbr_fd.c
 
-FLAGS = -Wall -Wextra -Werror
+FILES += $(addprefix libft/,$(LIB_FILES))
 
-INCLUDES = -I libft/ -I .
+OBJ_DIR := obj
+OBJ_LIST := $(FILES:.c=.o)
 
-LIBS = -lft -L libft
+OBJS := $(addprefix $(OBJ_DIR)/,$(OBJ_LIST))
 
-all: $(NAME)
+FLAGS := -Wall -Wextra -Werror
+
+INCLUDES := -I libft/ -I .
+
+LIBS := -lft -L libft
+
+all: $(OBJ_DIR) $(NAME)
 
 $(NAME): $(OBJS)
 	ar rc $(NAME) $(OBJS)
 	ranlib $(NAME)
 
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OBJ_DIR)/libft/
+
 # $^ is the dependencies of the rule
 # $@ is the name of the rule
-%.o : %.c
+$(OBJ_DIR)/%.o : %.c
 	gcc $(FLAGS) $(INCLUDES) -o $@ -c $^
 
 curqui: $(NAME)

@@ -249,22 +249,24 @@ void print_octal(t_array *output, t_arg arg, unsigned long o)
 	int		blank_count;
 	int		zero_count;
 	size_t	otoa_len;
+	int		has_prefix;
 
+	has_prefix = (arg.alternate_form && o != 0);
 	otoa = ft_otoa(o);
-
+	if (o == 0 && arg.has_precision && arg.precision == 0 && !arg.alternate_form)
+		return;
 	otoa_len = ft_strlen(otoa);
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
 	{
-		arg.precision = arg.min_width - arg.alternate_form;
+		arg.precision = arg.min_width;
 		arg.min_width = 0;
 	}
 	zero_count = ft_max(arg.precision - otoa_len, 0);
+	zero_count += has_prefix;
 	blank_count = ft_max(arg.min_width - (otoa_len + zero_count), 0);
-	blank_count -= arg.alternate_form;
+//	blank_count -= has_prefix;
 	if (arg.left_adjust == false)
 		append_n_chars(output, ' ', blank_count);
-	if (arg.alternate_form && o > 0)
-		array_append(output, "0", 1);
 	append_n_chars(output, '0', zero_count);
 	array_append(output, otoa, otoa_len);
 	if (arg.left_adjust)

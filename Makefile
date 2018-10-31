@@ -49,6 +49,9 @@ curqui: $(NAME)
 	make -C ~/tools/curqui_test/
 	~/tools/curqui_test/ft_printf_tests
 
+mouli: $(NAME)
+	make -C ~/42FileChecker/moulitest_42projects/ft_printf_tests/
+
 clean:
 	/bin/rm -f $(OBJS)
 

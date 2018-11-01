@@ -38,17 +38,17 @@ struct s_arg
 //	ft_token fn;
 	char token;
 	char plus_sign;
+	bool uppercase_prefix;
 };
 
 void process_arg(t_array *output, t_arg arg, va_list list);
 void consume_non_arg(const char *string, t_array *array, int *consumed);
 
 void print_int(t_array *output, t_arg arg, long l);
-void print_octal(t_array *output, t_arg arg, unsigned long ul);
+void print_octal(t_array *output, t_arg arg, unsigned long o);
+void print_hex(t_array *output, t_arg arg, unsigned long o);
 void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
-
-
 
 int		get_first_index(const char *string, char c)
 {
@@ -88,6 +88,13 @@ t_arg get_next_arg(const char *string, int *consumed)
 		{
 			arg.token = 'o';
 			arg.long_modifier |= (*ptr == 'O');
+			ptr++;
+			break;
+		}
+		else if (*ptr == 'x' || (*ptr == 'X'))
+		{
+			arg.token = 'x';
+			arg.uppercase_prefix |= (*ptr == 'X');
 			ptr++;
 			break;
 		}
@@ -188,6 +195,7 @@ int		ft_printf(const char *string, ...)
 	}
 	va_end(list);
 	write(1, output.data, (size_t)output.size);
+	free(output.data);
 	return output.size;
 }
 
@@ -237,18 +245,66 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		else
 			print_octal(output, arg, (unsigned int)ul);
 	}
+	else if (arg.token == 'x')
+	{
+		ul = va_arg(list, unsigned long);
+		if (arg.long_modifier)
+			print_hex(output, arg, ul);
+		else if (arg.double_short_modifier)
+			print_hex(output, arg, (unsigned char)ul);
+		else if (arg.short_modifier)
+			print_hex(output, arg, (unsigned short)ul);
+		else
+			print_hex(output, arg, (unsigned int)ul);
+
+	}
 	else if (arg.token == '%')
 	{
 		print_percent(output, arg);
 	}
 }
 
+void print_hex(t_array *output, t_arg arg, unsigned long o)
+{
+	size_t	hextoa_len;
+	char	*hextoa;
+	int		blank_count;
+	int		zero_count;
+	int		has_prefix;
+
+	has_prefix = (arg.alternate_form && o != 0);
+	hextoa = ft_hextoa(o, arg.uppercase_prefix);
+	if (o == 0 && arg.has_precision && arg.precision == 0)
+		hextoa[arg.plus_sign != 0] = '\0';
+	if (o == 0 && arg.has_precision && arg.precision == 0 && arg.min_width == 0)
+		return;
+	hextoa_len = ft_strlen(hextoa);
+	arg.min_width -= ft_max((has_prefix * 2), 0);
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width;
+		arg.min_width = 0;
+	}
+	zero_count = ft_max(arg.precision - hextoa_len, 0);
+//	zero_count = (zero_count) ? zero_count : has_prefix;
+	blank_count = ft_max(arg.min_width - (hextoa_len + zero_count), 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, ' ', blank_count);
+	if (arg.alternate_form && o > 0)
+		array_append(output, arg.uppercase_prefix ? "0X" : "0x", 2);
+	append_n_chars(output, '0', zero_count);
+	array_append(output, hextoa, hextoa_len);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
+	free(hextoa);
+}
+
 void print_octal(t_array *output, t_arg arg, unsigned long o)
 {
+	size_t	otoa_len;
 	char	*otoa;
 	int		blank_count;
 	int		zero_count;
-	size_t	otoa_len;
 	int		has_prefix;
 
 	has_prefix = (arg.alternate_form && o != 0);
@@ -264,13 +320,13 @@ void print_octal(t_array *output, t_arg arg, unsigned long o)
 	zero_count = ft_max(arg.precision - otoa_len, 0);
 	zero_count = (zero_count) ? zero_count : has_prefix;
 	blank_count = ft_max(arg.min_width - (otoa_len + zero_count), 0);
-//	blank_count -= has_prefix;
 	if (arg.left_adjust == false)
 		append_n_chars(output, ' ', blank_count);
 	append_n_chars(output, '0', zero_count);
 	array_append(output, otoa, otoa_len);
 	if (arg.left_adjust)
 		append_n_chars(output, ' ', blank_count);
+	free(otoa);
 }
 
 void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
@@ -292,8 +348,6 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 	}
 	zero_count =  ft_max(arg.precision - digit_count, 0);
 	blank_count = ft_max(arg.min_width - (itoa_len + zero_count), 0);
-//	printf("\n[zero_count: %d]\n", zero_count);
-//	printf("[blank_count: %d]\n", blank_count);
 	if (arg.left_adjust == false)
 		append_n_chars(output, ' ', blank_count);
 	if (has_sign_char)

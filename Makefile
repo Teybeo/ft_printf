@@ -10,6 +10,7 @@ LIB_FILES += ft_max.c
 LIB_FILES += ft_realloc.c
 LIB_FILES += ft_atoi.c
 LIB_FILES += ft_itoa.c
+LIB_FILES += ft_hextoa.c
 LIB_FILES += ft_ltoa.c
 LIB_FILES += ft_otoa.c
 LIB_FILES += ft_isdigit.c

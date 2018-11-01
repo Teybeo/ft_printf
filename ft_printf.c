@@ -275,11 +275,11 @@ void print_hex(t_array *output, t_arg arg, unsigned long o)
 	has_prefix = (arg.alternate_form && o != 0);
 	hextoa = ft_hextoa(o, arg.uppercase_prefix);
 	if (o == 0 && arg.has_precision && arg.precision == 0)
-		hextoa[arg.plus_sign != 0] = '\0';
+		hextoa[0] = '\0';
 	if (o == 0 && arg.has_precision && arg.precision == 0 && arg.min_width == 0)
 		return;
 	hextoa_len = ft_strlen(hextoa);
-	arg.min_width -= ft_max((has_prefix * 2), 0);
+	arg.min_width = ft_max(arg.min_width - has_prefix * 2, 0);
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
 	{
 		arg.precision = arg.min_width;

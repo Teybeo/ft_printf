@@ -262,7 +262,7 @@ void print_octal(t_array *output, t_arg arg, unsigned long o)
 		arg.min_width = 0;
 	}
 	zero_count = ft_max(arg.precision - otoa_len, 0);
-	zero_count += has_prefix;
+	zero_count = (zero_count) ? zero_count : has_prefix;
 	blank_count = ft_max(arg.min_width - (otoa_len + zero_count), 0);
 //	blank_count -= has_prefix;
 	if (arg.left_adjust == false)

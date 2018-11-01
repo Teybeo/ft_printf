@@ -16,7 +16,7 @@ set(SOURCES
     libft/ft_isdigit.c
     libft/ft_putnbr_fd.c
     libft/ft_putchar_fd.c
-        )
+        libft/ft_otoa.c)
 set(TEST_SOURCES
         ft_printf.c
         test.c)

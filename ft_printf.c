@@ -50,6 +50,8 @@ void print_hex(t_array *output, t_arg arg, unsigned long o);
 void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
 
+void print_address(t_array *output, t_arg arg, unsigned long ul);
+
 int		get_first_index(const char *string, char c)
 {
 	int	i;
@@ -95,6 +97,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 		{
 			arg.token = 'x';
 			arg.uppercase_prefix |= (*ptr == 'X');
+			ptr++;
+			break;
+		}
+		else if (*ptr == 'p')
+		{
+			arg.token = 'p';
 			ptr++;
 			break;
 		}
@@ -256,12 +264,44 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 			print_hex(output, arg, (unsigned short)ul);
 		else
 			print_hex(output, arg, (unsigned int)ul);
-
+	}
+	else if (arg.token == 'p')
+	{
+		ul = va_arg(list, unsigned long);
+		print_address(output, arg, ul);
 	}
 	else if (arg.token == '%')
 	{
 		print_percent(output, arg);
 	}
+}
+
+void print_address(t_array *output, t_arg arg, unsigned long ul)
+{
+	size_t	hextoa_len;
+	char	*hextoa;
+	int		blank_count;
+	int		zero_count;
+
+	hextoa = ft_hextoa(ul, false);
+	hextoa_len = ft_strlen(hextoa);
+	if (arg.precision == 0 && ul == 0 && arg.has_precision)
+		hextoa_len--;
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width;
+		arg.min_width = 0;
+	}
+	zero_count = ft_max(arg.precision - hextoa_len, 0);
+	blank_count = ft_max(arg.min_width - 2 - (hextoa_len + zero_count), 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, ' ', blank_count);
+	array_append(output, "0x", 2);
+	append_n_chars(output, '0', zero_count);
+	array_append(output, hextoa, hextoa_len);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
+	free(hextoa);
 }
 
 void print_hex(t_array *output, t_arg arg, unsigned long o)

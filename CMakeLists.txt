@@ -3,6 +3,8 @@ project(printf C)
 
 set(CMAKE_C_STANDARD 99)
 
+add_compile_options(-Wall -Wextra)
+
 set(SOURCES
     libft/array.c
     libft/ft_realloc.c

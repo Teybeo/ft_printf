@@ -12,6 +12,9 @@ void test(char* format, int value);
 
 void test_UL(char* format, unsigned long value);
 
+void test_str(char* format, char *string)
+;
+
 int main()
 {
 	setvbuf(stdout, NULL, _IONBF, 0);
@@ -127,6 +130,8 @@ int main()
 	for (int i = 0; i < 258; ++i) {
 		test("%c", i);
 	}
+//	test_str("%s", "coco");
+	test_str("%10.5s", "ab");
 //	printf("%lu\n", -12345612220);
 //	ft_printf("%lu\n", -12345612220);
 //	test("%lu", -12345612220U);
@@ -134,6 +139,19 @@ int main()
 	return 0;
 }
 
+void test_str(char* format, char *string)
+{
+	int ret;
+
+	printf("TEST: %s, %s\n", format, string);
+	ret = ft_printf(format, string);
+	printf(", %d", ret);
+	puts("");
+	puts("-- LIB --");
+	ret = printf(format, string);
+	printf(", %d", ret);
+	puts("\n");
+}
 void test(char* format, int value)
 {
 	int ret;
@@ -175,7 +193,6 @@ void test_locale()
 		int ret = printf("%lc", i);
 		printf("   %d\n", ret);
 	}
-	wchar_t test;
 	printf("\nsizeof wchar_t: %zu\n", sizeof(wchar_t));
 
 //	printf("")

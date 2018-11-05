@@ -50,10 +50,9 @@ void print_octal(t_array *output, t_arg arg, unsigned long o);
 void print_hex(t_array *output, t_arg arg, unsigned long o);
 void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
-
 void print_address(t_array *output, t_arg arg, unsigned long ul);
-
-void print_char(t_array *output, t_arg arg, unsigned char i);
+void print_char(t_array *output, t_arg arg, unsigned char uc);
+void print_string(t_array *output, t_arg arg, char *string);
 
 int		get_first_index(const char *string, char c)
 {
@@ -112,6 +111,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 		else if (*ptr == 'c')
 		{
 			arg.token = 'c';
+			ptr++;
+			break;
+		}
+		else if (*ptr == 's')
+		{
+			arg.token = 's';
 			ptr++;
 			break;
 		}
@@ -285,10 +290,42 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		ul = va_arg(list, unsigned long);
 		print_char(output, arg, (unsigned char)ul);
 	}
+	else if (arg.token == 's')
+	{
+		ul = va_arg(list, unsigned long);
+		print_string(output, arg, (char *)ul);
+	}
 	else if (arg.token == '%')
 	{
 		print_percent(output, arg);
 	}
+}
+
+void print_string(t_array *output, t_arg arg, char *string)
+{
+	int		i;
+	int		written_char_count;
+	size_t	str_len;
+	int		blank_count;
+	char	pad_char;
+
+	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
+	string = (string) ? string : "(null)";
+	str_len = ft_strlen(string);
+	written_char_count = str_len;
+	if (arg.has_precision && arg.precision < str_len)
+		written_char_count = arg.precision;
+	blank_count = ft_max(arg.min_width - written_char_count, 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, pad_char, blank_count);
+	i = 0;
+	while (string[i] != 0 && i < written_char_count)
+	{
+		array_append(output, string + i, 1);
+		i++;
+	}
+	if (arg.left_adjust)
+		append_n_chars(output, pad_char, blank_count);
 }
 
 void print_char(t_array *output, t_arg arg, unsigned char uc)

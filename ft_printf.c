@@ -8,6 +8,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <stddef.h>
 
 /*
  * sS p dD i oO uU xX cC
@@ -51,6 +52,8 @@ void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
 
 void print_address(t_array *output, t_arg arg, unsigned long ul);
+
+void print_char(t_array *output, t_arg arg, unsigned char i);
 
 int		get_first_index(const char *string, char c)
 {
@@ -103,6 +106,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 		else if (*ptr == 'p')
 		{
 			arg.token = 'p';
+			ptr++;
+			break;
+		}
+		else if (*ptr == 'c')
+		{
+			arg.token = 'c';
 			ptr++;
 			break;
 		}
@@ -217,6 +226,7 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 {
 	long l;
 	unsigned long ul;
+
 	if (arg.token == 'd')
 	{
 		l = va_arg(list, long);
@@ -270,10 +280,29 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		ul = va_arg(list, unsigned long);
 		print_address(output, arg, ul);
 	}
+	else if (arg.token == 'c')
+	{
+		ul = va_arg(list, unsigned long);
+		print_char(output, arg, (unsigned char)ul);
+	}
 	else if (arg.token == '%')
 	{
 		print_percent(output, arg);
 	}
+}
+
+void print_char(t_array *output, t_arg arg, unsigned char uc)
+{
+	int		blank_count;
+	char	pad_char;
+
+	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
+	blank_count = ft_max(arg.min_width - 1, 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, pad_char, blank_count);
+	array_append(output, &uc, 1);
+	if (arg.left_adjust)
+		append_n_chars(output, pad_char, blank_count);
 }
 
 void print_address(t_array *output, t_arg arg, unsigned long ul)

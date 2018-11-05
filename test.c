@@ -5,6 +5,8 @@
 #include <limits.h>
 #include <zconf.h>
 #include <libft.h>
+#include <locale.h>
+#include <stdlib.h>
 
 void test(char* format, int value);
 
@@ -117,8 +119,14 @@ int main()
 	test("%0#10.0x", 0);
 
 	test("%p", 0);
-	test("% 10.4p", 0);
-
+	test("%.0p", 0);
+	test("%.p", 0);
+	test("%.4p", 42);
+	test("%.4p", 0);
+	test("%#20.4hhp", INT_MAX);
+	for (int i = 0; i < 258; ++i) {
+		test("%c", i);
+	}
 //	printf("%lu\n", -12345612220);
 //	ft_printf("%lu\n", -12345612220);
 //	test("%lu", -12345612220U);
@@ -153,4 +161,30 @@ void test_UL(char* format, unsigned long value)
 	ret_mine = ft_printf(format, value, value);
 	printf(", %d", ret_mine);
 	puts("\n");
+}
+
+void test_locale()
+{
+	setlocale(LC_ALL, "");
+	setlocale(LC_ALL, "en_US.UTF-8");
+	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);
+//	printf("%s\n", setlocale(LC_ALL, NULL));
+	for (int i = 0; i < 512; ++i) {
+
+		printf("%d: ", i);
+		int ret = printf("%lc", i);
+		printf("   %d\n", ret);
+	}
+	wchar_t test;
+	printf("\nsizeof wchar_t: %zu\n", sizeof(wchar_t));
+
+//	printf("")
+//	setlocale (LC_MONETARY,"");
+	struct lconv * lc;
+	lc=localeconv();
+//	lc->grouping
+	printf ("Local Currency Symbol: %s\n",lc->currency_symbol);
+	printf ("International Currency Symbol: %s\n",lc->int_curr_symbol);
+	printf("%\'f\n", 40900002.f);
+
 }

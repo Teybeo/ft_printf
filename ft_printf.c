@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <stddef.h>
+#include <limits.h>
 
 /*
  * sS p dD i oO uU xX cC
@@ -52,7 +53,9 @@ void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
 void print_address(t_array *output, t_arg arg, unsigned long ul);
 void print_char(t_array *output, t_arg arg, unsigned char uc);
+void print_wchar(t_array *output, t_arg arg, wchar_t wc);
 void print_string(t_array *output, t_arg arg, char *string);
+void print_wstring(t_array *output, t_arg arg, wchar_t *string);
 
 int		get_first_index(const char *string, char c)
 {
@@ -110,13 +113,25 @@ t_arg get_next_arg(const char *string, int *consumed)
 		}
 		else if (*ptr == 'c')
 		{
-			arg.token = 'c';
+			arg.token = arg.long_modifier ? 'C' : 'c';
+			ptr++;
+			break;
+		}
+		else if (*ptr == 'C')
+		{
+			arg.token = 'C';
 			ptr++;
 			break;
 		}
 		else if (*ptr == 's')
 		{
 			arg.token = 's';
+			ptr++;
+			break;
+		}
+		else if (*ptr == 'S')
+		{
+			arg.token = 'S';
 			ptr++;
 			break;
 		}
@@ -290,15 +305,42 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 		ul = va_arg(list, unsigned long);
 		print_char(output, arg, (unsigned char)ul);
 	}
+	else if (arg.token == 'C')
+	{
+		ul = va_arg(list, unsigned long);
+		print_wchar(output, arg, (wchar_t) ul);
+	}
 	else if (arg.token == 's')
 	{
 		ul = va_arg(list, unsigned long);
 		print_string(output, arg, (char *)ul);
 	}
+	else if (arg.token == 'S')
+	{
+		ul = va_arg(list, unsigned long);
+		print_wstring(output, arg, (wchar_t *)ul);
+	}
 	else if (arg.token == '%')
 	{
 		print_percent(output, arg);
 	}
+}
+
+void print_wchar(t_array *output, t_arg arg, wchar_t wc)
+{
+	int		blank_count;
+	char	pad_char;
+	int		byte_count;
+
+	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
+	blank_count = ft_max(arg.min_width - 1, 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, pad_char, blank_count);
+	char buffer[MB_LEN_MAX] = {};
+	byte_count = ft_wctomb(buffer, wc);
+	array_append(output, buffer, byte_count);
+	if (arg.left_adjust)
+		append_n_chars(output, pad_char, blank_count);
 }
 
 void print_string(t_array *output, t_arg arg, char *string)
@@ -322,6 +364,36 @@ void print_string(t_array *output, t_arg arg, char *string)
 	while (string[i] != 0 && i < written_char_count)
 	{
 		array_append(output, string + i, 1);
+		i++;
+	}
+	if (arg.left_adjust)
+		append_n_chars(output, pad_char, blank_count);
+}
+
+void print_wstring(t_array *output, t_arg arg, wchar_t *string)
+{
+	int		i;
+	int		written_char_count;
+	size_t	str_len;
+	int		blank_count;
+	char	pad_char;
+	char	buffer[MB_LEN_MAX] = {};
+	
+	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
+	string = (string) ? string : L"(null)";
+	str_len = ft_strlen(string);
+	written_char_count = str_len;
+	if (arg.has_precision && arg.precision < str_len)
+		written_char_count = arg.precision;
+	blank_count = ft_max(arg.min_width - written_char_count, 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, pad_char, blank_count);
+	i = 0;
+	while (string[i] != 0 && i < written_char_count)
+	{
+		ft_memset(buffer, 0, MB_LEN_MAX);
+		int byte_count = ft_wctomb(buffer, string[i]);
+		array_append(output, buffer, byte_count);
 		i++;
 	}
 	if (arg.left_adjust)

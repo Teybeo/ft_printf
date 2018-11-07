@@ -13,6 +13,7 @@ LIB_FILES += ft_itoa.c
 LIB_FILES += ft_hextoa.c
 LIB_FILES += ft_ltoa.c
 LIB_FILES += ft_otoa.c
+LIB_FILES += ft_wctomb.c
 LIB_FILES += ft_isdigit.c
 LIB_FILES += ft_putchar_fd.c
 LIB_FILES += ft_putnbr_fd.c

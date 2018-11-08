@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/06 18:06:47 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/08 18:38:25 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/08 20:55:38 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,16 @@ size_t	ft_get_mb_size(const wchar_t *s)
 	size_t	i;
 	size_t	byte_count;
 	char	buffer[MB_LEN_MAX];
+	char	mb_size;
 
 	i = 0;
 	byte_count = 0;
 	while (s[i] != '\0')
 	{
-		byte_count += ft_wctomb(buffer, s[i]);
+		mb_size = ft_wctomb(buffer, s[i]);
+		if (mb_size == 0)
+			return 0;
+		byte_count += mb_size;
 		i++;
 	}
 	return (byte_count);

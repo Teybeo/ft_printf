@@ -393,7 +393,9 @@ void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error)
 	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
 	string = (string) ? string : L"(null)";
 	max_written_byte_count = ft_get_mb_size(string);
-
+	*error = (max_written_byte_count == 0 && *string != '\0');
+	if (*error)
+		return;
 	if (arg.has_precision && arg.precision < max_written_byte_count)
 		max_written_byte_count = ft_get_fitting_mb_size(string, arg.precision);
 	blank_count = ft_max(arg.min_width - max_written_byte_count, 0);

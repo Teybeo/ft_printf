@@ -14,8 +14,10 @@
 #define MASK_BIT_12_TO_17 258048
 #define MASK_BIT_18_TO_20 1835008
 
-int	ft_wctomb(char *buffer, wchar_t c)
+char	ft_wctomb(char *buffer, wchar_t c)
 {
+	if (c < 0)
+		return 0;
 	// 0 to 7 bits
 	if (c <= 127 || (c <= 255 && MB_CUR_MAX == 1))
 	{

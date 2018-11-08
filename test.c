@@ -17,13 +17,7 @@ int main()
 {
 	setvbuf(stdout, NULL, _IONBF, 0);
 
-	setlocale(LC_ALL, "en_US.UTF-8");
-
-	for (int i = 0; i < 65535; ++i) {
-//		test("%C", i);
-	}
-
-
+//	setlocale(LC_ALL, "en_US.UTF-8");
 
 //	test_locale();
 //	test("%lc", 0x4e6);
@@ -45,7 +39,14 @@ int main()
 //	test_str("%4.15S", L"我是一只猫。");
 
 //	test_str("%10S", (char*)(L"☭bar☭"));
+	// LIB C returns 0
+	// UB OR WHAT ????
 //	test_str("%S", (char*)(L"\x53\x3abc\x81000"));
+	test_str("%S", (char*)(L"S\x100u"));
+//	ft_printf("%S%S", L"Α α", L"Β β");
+//	ft_printf("%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S",	L"Α α", L"Β β", L"Γ γ", L"Δ δ", L"Ε ε", L"Ζ ζ", L"Η η", L"Θ θ", L"Ι ι", L"Κ κ", L"Λ λ", L"Μ μ", L"Ν ν", L"Ξ ξ", L"Ο ο", L"Π π", L"Ρ ρ", L"Σ σ", L"Τ τ", L"Υ υ", L"Φ φ", L"Χ χ", L"Ψ ψ", L"Ω ω", L"");
+//	printf("%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S",	L"Α α", L"Β β", L"Γ γ", L"Δ δ", L"Ε ε", L"Ζ ζ", L"Η η", L"Θ θ", L"Ι ι", L"Κ κ", L"Λ λ", L"Μ μ", L"Ν ν", L"Ξ ξ", L"Ο ο", L"Π π", L"Ρ ρ", L"Σ σ", L"Τ τ", L"Υ υ", L"Φ φ", L"Χ χ", L"Ψ ψ", L"Ω ω", L"");
+//	printf("%S%S", L"Α α", L"Β β");
 //	test_str("%150.8S", (char *) L"我是一只猫。");
 //	test_str("%S", (char *) L"我是一只猫。");
 //	test_str("%S", L"米");
@@ -53,8 +54,10 @@ int main()
 
 //	ft_printf("%C", 0x001fffff);
 //	ft_printf("%C", 0x40501);
-	printf("%C", 0x40501);
-
+//	printf("%C", 0x40501);
+//	test("%C", (size_t)-2);
+//	test("%C", 256);
+	return 0;
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);
 	printf("MB_LEN_MAX: %d\n", MB_LEN_MAX);
 	printf("%s\n", setlocale(LC_ALL, NULL));

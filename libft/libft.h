@@ -6,7 +6,7 @@
 /*   By: tdarchiv <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 12:49:52 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/08 17:23:24 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/08 18:38:25 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int				ft_isascii(int c);
 int				ft_toupper(int c);
 int				ft_tolower(int c);
 
-int				ft_wctomb(char *buffer, wchar_t c);
+char			ft_wctomb(char *buffer, wchar_t c);
 size_t			ft_get_mb_size(const wchar_t *s);
 size_t			ft_get_fitting_mb_size(wchar_t *s, size_t max_size);
 

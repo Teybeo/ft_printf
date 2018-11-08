@@ -36,7 +36,7 @@ int	ft_wctomb(char *buffer, wchar_t c)
 	// 12 to 16 bits
 	else if (c <= 65535)
 	{
-		if (MB_CUR_MAX < 3)
+		if (MB_CUR_MAX < 3 || (c >= 0xD800 && c <= 0xDFFF))
 			return 0;
 		buffer[0] |= HEADER_3_BYTES;
 		buffer[0] |= (c & MASK_BIT_12_TO_15) >> 12;

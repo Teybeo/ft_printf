@@ -54,6 +54,9 @@ curqui: $(NAME)
 mouli: $(NAME)
 	make -C ~/42FileChecker/moulitest_42projects/ft_printf_tests/
 
+
+yapt: $(NAME)
+	~/tools/yapt/
 clean:
 	/bin/rm -f $(OBJS)
 

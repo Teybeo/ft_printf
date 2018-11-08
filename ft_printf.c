@@ -43,7 +43,7 @@ struct s_arg
 	bool uppercase_prefix;
 };
 
-void process_arg(t_array *output, t_arg arg, va_list list);
+void process_arg(t_array *output, t_arg arg, va_list list, int *error);
 void consume_non_arg(const char *string, t_array *array, int *consumed);
 
 void print_int(t_array *output, t_arg arg, long l);
@@ -53,9 +53,9 @@ void print_uint(t_array *output, t_arg arg, unsigned long l);
 void print_percent(t_array *output, t_arg arg);
 void print_address(t_array *output, t_arg arg, unsigned long ul);
 void print_char(t_array *output, t_arg arg, unsigned char uc);
-void print_wchar(t_array *output, t_arg arg, wchar_t wc);
+void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error);
 void print_string(t_array *output, t_arg arg, char *string);
-void print_wstring(t_array *output, t_arg arg, wchar_t *string);
+void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error);
 
 int		get_first_index(const char *string, char c)
 {
@@ -125,7 +125,7 @@ t_arg get_next_arg(const char *string, int *consumed)
 		}
 		else if (*ptr == 's')
 		{
-			arg.token = 's';
+			arg.token = arg.long_modifier ? 'S' : 's';
 			ptr++;
 			break;
 		}
@@ -212,7 +212,9 @@ int		ft_printf(const char *string, ...)
 	t_array	output;
 	t_arg	arg;
 	int		consumed;
+	int		error;
 
+	error = 0;
 	output = array_create(sizeof(char), 64);
 	va_start(list, string);
 	while (*string)
@@ -222,7 +224,9 @@ int		ft_printf(const char *string, ...)
 			string++;
 			arg = get_next_arg(string, &consumed);
 			string += consumed;
-			process_arg(&output, arg, list);
+			process_arg(&output, arg, list, &error);
+			if (error)
+				return -1;
 		}
 		else
 		{
@@ -242,7 +246,7 @@ void	append_n_chars(t_array *array, char c, int i)
 		array_append(array, &c, 1);
 }
 
-void process_arg(t_array *output, t_arg arg, va_list list)
+void process_arg(t_array *output, t_arg arg, va_list list, int *error)
 {
 	long l;
 	unsigned long ul;
@@ -308,7 +312,7 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 	else if (arg.token == 'C')
 	{
 		ul = va_arg(list, unsigned long);
-		print_wchar(output, arg, (wchar_t) ul);
+		print_wchar(output, arg, (wchar_t) ul, error);
 	}
 	else if (arg.token == 's')
 	{
@@ -318,7 +322,7 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 	else if (arg.token == 'S')
 	{
 		ul = va_arg(list, unsigned long);
-		print_wstring(output, arg, (wchar_t *)ul);
+		print_wstring(output, arg, (wchar_t *)ul, error);
 	}
 	else if (arg.token == '%')
 	{
@@ -326,18 +330,23 @@ void process_arg(t_array *output, t_arg arg, va_list list)
 	}
 }
 
-void print_wchar(t_array *output, t_arg arg, wchar_t wc)
+void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error)
 {
 	int		blank_count;
 	char	pad_char;
 	int		byte_count;
 
 	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
-	blank_count = ft_max(arg.min_width - 1, 0);
-	if (arg.left_adjust == false)
-		append_n_chars(output, pad_char, blank_count);
 	char buffer[MB_LEN_MAX] = {};
 	byte_count = ft_wctomb(buffer, wc);
+	if (byte_count == 0)
+	{
+		*error = true;
+		return ;
+	}
+	blank_count = ft_max(arg.min_width - byte_count, 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, pad_char, blank_count);
 	array_append(output, buffer, byte_count);
 	if (arg.left_adjust)
 		append_n_chars(output, pad_char, blank_count);
@@ -370,7 +379,7 @@ void print_string(t_array *output, t_arg arg, char *string)
 		append_n_chars(output, pad_char, blank_count);
 }
 
-void print_wstring(t_array *output, t_arg arg, wchar_t *string)
+void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error)
 {
 	int		i;
 	int		written_char_count;
@@ -381,7 +390,8 @@ void print_wstring(t_array *output, t_arg arg, wchar_t *string)
 	
 	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
 	string = (string) ? string : L"(null)";
-	str_len = ft_strlen(string);
+//	str_len = ft_wstrlen((const char *) string);
+	str_len = ft_wstrlen(string);
 	written_char_count = str_len;
 	if (arg.has_precision && arg.precision < str_len)
 		written_char_count = arg.precision;
@@ -393,6 +403,9 @@ void print_wstring(t_array *output, t_arg arg, wchar_t *string)
 	{
 		ft_memset(buffer, 0, MB_LEN_MAX);
 		int byte_count = ft_wctomb(buffer, string[i]);
+		*error = (byte_count == 0);
+		if (*error)
+			return;
 		array_append(output, buffer, byte_count);
 		i++;
 	}

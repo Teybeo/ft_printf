@@ -559,13 +559,9 @@ void print_uint(t_array *output, t_arg arg, unsigned long l)
 {
 	char	*ultoa;
 
-	if (l == 0 && arg.has_precision && arg.precision == 0)
-	{
-		if (arg.plus_sign)
-			array_append(output, &arg.plus_sign, 1);
-		return;
-	}
 	ultoa = ft_ultoa_sign(l, arg.plus_sign);
+	if (l == 0 && arg.has_precision && arg.precision == 0)
+		ultoa[arg.plus_sign != 0] = '\0';
 	print_integer(output, arg, ultoa, ft_strlen(ultoa));
 	free(ultoa);
 }

@@ -6,7 +6,7 @@
 /*   By: tdarchiv <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/05 12:49:52 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/07 12:37:04 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/08 17:23:24 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void			*ft_memchr(const void *s, int c, size_t count);
 int				ft_memcmp(const void *s1, const void *s2, size_t count);
 
 size_t			ft_strlen(const char *s);
-size_t			ft_wstrlen(const wchar_t *s);
+
 char			*ft_strdup(const char *s);
 char			*ft_strcpy(char *dest, char const *src);
 char			*ft_strncpy(char *dest, char const *src, size_t n);
@@ -70,6 +70,9 @@ int				ft_toupper(int c);
 int				ft_tolower(int c);
 
 int				ft_wctomb(char *buffer, wchar_t c);
+size_t			ft_get_mb_size(const wchar_t *s);
+size_t			ft_get_fitting_mb_size(wchar_t *s, size_t max_size);
+
 int				ft_max(int a, int b);
 
 void			*ft_memalloc(size_t size);

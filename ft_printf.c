@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include <limits.h>
+#include <wchar.h>
 
 /*
  * sS p dD i oO uU xX cC
@@ -378,34 +379,38 @@ void print_string(t_array *output, t_arg arg, char *string)
 	if (arg.left_adjust)
 		append_n_chars(output, pad_char, blank_count);
 }
-
+// For wchar* strings, the precision and width are the max/min count of BYTES
+// that can be written, not the actual character count
 void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error)
 {
 	int		i;
-	int		written_char_count;
-	size_t	str_len;
+	size_t	max_written_byte_count;
+	size_t	written_byte_count;
 	int		blank_count;
 	char	pad_char;
 	char	buffer[MB_LEN_MAX] = {};
-	
+
 	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
 	string = (string) ? string : L"(null)";
-//	str_len = ft_wstrlen((const char *) string);
-	str_len = ft_wstrlen(string);
-	written_char_count = str_len;
-	if (arg.has_precision && arg.precision < str_len)
-		written_char_count = arg.precision;
-	blank_count = ft_max(arg.min_width - written_char_count, 0);
+	max_written_byte_count = ft_get_mb_size(string);
+
+	if (arg.has_precision && arg.precision < max_written_byte_count)
+		max_written_byte_count = ft_get_fitting_mb_size(string, arg.precision);
+	blank_count = ft_max(arg.min_width - max_written_byte_count, 0);
 	if (arg.left_adjust == false)
 		append_n_chars(output, pad_char, blank_count);
 	i = 0;
-	while (string[i] != 0 && i < written_char_count)
+	written_byte_count = 0;
+	while (string[i] != 0 && written_byte_count < max_written_byte_count)
 	{
 		ft_memset(buffer, 0, MB_LEN_MAX);
 		int byte_count = ft_wctomb(buffer, string[i]);
 		*error = (byte_count == 0);
 		if (*error)
 			return;
+		if (written_byte_count + byte_count > max_written_byte_count)
+			break;
+		written_byte_count += byte_count;
 		array_append(output, buffer, byte_count);
 		i++;
 	}

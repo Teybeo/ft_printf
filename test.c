@@ -9,132 +9,51 @@
 #include <stdlib.h>
 
 void test(char* format, int value);
-
 void test_UL(char* format, unsigned long value);
-
-void test_str(char* format, char *string)
-;
+void test_str(char* format, char *string);
+void test_locale();
 
 int main()
 {
 	setvbuf(stdout, NULL, _IONBF, 0);
 
-	test("%d", 42);
+	setlocale(LC_ALL, "en_US.UTF-8");
 
-	test("%07d", -42);
-	test("%+07d", 42);
-	test("% 07d", 42);
-	test("%07d", 42);
-//
-	test("%.7d", -42);
-	test("%+.7d", 42);
-	test("% .7d", 42);
-	test("%.7d", 42);
-	test("%010.1d", 42);
-	test("%010.0d", 42);
-	test("%010.d", 42);
-	test("%+.0d nothing", 0);
-	test("%%", 0);
-
-	test("%o", 42);
-	test("%5o", 42);
-	test("%.0o", 42);
-	test("%.o", 42);
-	test("%5.0o", 42);
-
-	test("%0o", 42);
-	test("%05o", 42);
-	test("%0.0o", 42);
-	test("%0.o", 42);
-	test("%05.0o", 42);
-
-	test("% o", 42);
-	test("% 5o", 42);
-	test("% .0o", 42);
-	test("% .o", 42);
-	test("% 5.0o", 42);
-
-	test("%0 o", 42);
-	test("%0 5o", 42);
-	test("%0 .0o", 42);
-	test("%0 .o", 42);
-	test("%0 5.0o", 42);
-
-	test("%#o", 42);
-	test("%#5o", 42);
-	test("%#.0o", 42);
-	test("%#.o", 42);
-	test("%#5.0o", 42);
-
-	test("%#0o", 42);
-	test("%#05o", 42);
-	test("%#0.0o", 42);
-	test("%#0.o", 42);
-	test("%#05.0o", 42);
-
-	test("%# o", 42);
-	test("%# 5o", 42);
-	test("%# .0o", 42);
-	test("%# .o", 42);
-	test("%# 5.0o", 42);
-
-	test("%#0 o", 42);
-	test("%#0 5o", 42);
-	test("%#0 .0o", 42);
-	test("%#0 .o", 42);
-	test("%#0 5.0o", 42);
-
-	test("%#o", 0);
-	test("%#5o", 0);
-	test("%#.0o", 0);
-	test("%#.o", 0);
-	test("%#5.0o", 0);
-
-	test("%#0o", 0);
-	test("%#05o", 0);
-	test("%#0.0o", 0);
-	test("%#0.o", 0);
-	test("%#05.0o", 0);
-
-	test("%# o", 0);
-	test("%# 5o", 0);
-	test("%# .0o", 0);
-	test("%# .o", 0);
-	test("%# 5.0o", 0);
-
-	test("%#0 o", 0);
-	test("%#0 5o", 0);
-	test("%#0 .0o", 0);
-	test("%#0 .o", 0);
-	test("%#0 5.0o", 0);
-
-	test("%#05o", 12);
-	test("%#0.5o", 12);
-	test("%#.5o", 12);
-
-	test("%#010x", 12);
-
-	test("%#.1x", 0);
-	test("%#.0x", 0);
-	test("%#.x", 0);
-
-	test("%#10.0x", 0);
-	test("%0#10.0x", 0);
-
-	test("%p", 0);
-	test("%.0p", 0);
-	test("%.p", 0);
-	test("%.4p", 42);
-	test("%.4p", 0);
-	test("%#20.4hhp", INT_MAX);
-	for (int i = 0; i < 258; ++i) {
-		test("%c", i);
+	for (int i = 0; i < 65535; ++i) {
+//		test("%C", i);
 	}
+
+
+
+//	test_locale();
+//	test("%lc", 0x4e6);
+//	test_UL("%.4S", L"我是一只猫。");
+//	test_UL("%5lc", 350);
+//	test_UL("%C", 255);
+//	test_UL("%jc", L'☭');
+//	test_UL("%5.0u", (short)0);
+//	test_UL("%p", NULL);
+//	test_UL("%C", (__darwin_wint_t)-2);
+//	test_UL("%C", 254);
 //	test_str("%s", "coco");
-	test_str("%10.5s", "ab");
+//	test_str("%10.5s", "ab");
 //	printf("%lu\n", -12345612220);
 //	ft_printf("%lu\n", -12345612220);
 //	test("%lu", -12345612220U);
+
+//	test_str("%15.4S", (char *) L"我是一只猫。");
+//	test_str("%4.15S", L"我是一只猫。");
+
+//	test_str("%10S", (char*)(L"☭bar☭"));
+	test_str("%S", (char*)(L"\x53\x3abc\x81000"));
+//	test_str("%150.8S", (char *) L"我是一只猫。");
+//	test_str("%S", (char *) L"我是一只猫。");
+//	test_str("%S", L"米");
+
+	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);
+	printf("MB_LEN_MAX: %d\n", MB_LEN_MAX);
+	printf("%s\n", setlocale(LC_ALL, NULL));
+
 
 	return 0;
 }
@@ -172,18 +91,18 @@ void test_UL(char* format, unsigned long value)
 	int ret_mine;
 
 	printf("TEST: %s, %lu\n", format, value);
-	ret_lib = printf(format, value, value);
+	ret_lib = ft_printf(format, value, value);
 	printf(", %d", ret_lib);
 	puts("");
-	puts("-- MINE --");
-	ret_mine = ft_printf(format, value, value);
+	puts("-- LIB --");
+	ret_mine = printf(format, value, value);
 	printf(", %d", ret_mine);
 	puts("\n");
 }
 
 void test_locale()
 {
-	setlocale(LC_ALL, "");
+//	setlocale(LC_ALL, "");
 	setlocale(LC_ALL, "en_US.UTF-8");
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);
 //	printf("%s\n", setlocale(LC_ALL, NULL));

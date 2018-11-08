@@ -45,15 +45,19 @@ int main()
 //	test_str("%4.15S", L"我是一只猫。");
 
 //	test_str("%10S", (char*)(L"☭bar☭"));
-	test_str("%S", (char*)(L"\x53\x3abc\x81000"));
+//	test_str("%S", (char*)(L"\x53\x3abc\x81000"));
 //	test_str("%150.8S", (char *) L"我是一只猫。");
 //	test_str("%S", (char *) L"我是一只猫。");
 //	test_str("%S", L"米");
+//	test_UL("%C", 0x40501);
+
+//	ft_printf("%C", 0x001fffff);
+//	ft_printf("%C", 0x40501);
+	printf("%C", 0x40501);
 
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);
 	printf("MB_LEN_MAX: %d\n", MB_LEN_MAX);
 	printf("%s\n", setlocale(LC_ALL, NULL));
-
 
 	return 0;
 }

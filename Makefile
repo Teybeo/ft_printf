@@ -54,9 +54,9 @@ curqui: $(NAME)
 mouli: $(NAME)
 	make -C ~/42FileChecker/moulitest_42projects/ft_printf_tests/
 
-
 yapt: $(NAME)
-	~/tools/yapt/
+	~/tools/yapt/yapt.py ~/tools/yapt/test_files/regular_cases.py
+
 clean:
 	/bin/rm -f $(OBJS)
 

@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/06 18:06:47 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/08 20:55:38 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/09 15:36:17 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,27 +25,30 @@ size_t	ft_strlen(const char *s)
 	return (i);
 }
 
-size_t	ft_get_mb_size(const wchar_t *s)
+size_t	ft_get_mb_size(const wchar_t *s, int *error)
 {
 	size_t	i;
 	size_t	byte_count;
 	char	buffer[MB_LEN_MAX];
-	char	mb_size;
+	char	mbchar_size;
 
 	i = 0;
 	byte_count = 0;
 	while (s[i] != '\0')
 	{
-		mb_size = ft_wctomb(buffer, s[i]);
-		if (mb_size == 0)
+		mbchar_size = ft_wctomb(buffer, s[i]);
+		if (mbchar_size == 0)
+		{
+			*error = 1;
 			return 0;
-		byte_count += mb_size;
+		}
+		byte_count += mbchar_size;
 		i++;
 	}
 	return (byte_count);
 }
 
-size_t	ft_get_fitting_mb_size(wchar_t *s, size_t max_size)
+size_t	ft_get_fitting_mb_size(wchar_t *s, size_t max_size, int *error)
 {
 	size_t	i;
 	size_t	byte_count;
@@ -57,9 +60,16 @@ size_t	ft_get_fitting_mb_size(wchar_t *s, size_t max_size)
 	while (s[i] != '\0')
 	{
 		mbchar_size = ft_wctomb(buffer, s[i]);
-		if (byte_count + mbchar_size > max_size)
-			return byte_count;
+		if (mbchar_size == 0)
+		{
+			*error = 1;
+			return 0;
+		}
 		byte_count += mbchar_size;
+		if (byte_count == max_size)
+			return byte_count;
+		if (byte_count > max_size)
+			return byte_count - mbchar_size;
 		i++;
 	}
 	return byte_count;

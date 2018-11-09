@@ -7,6 +7,8 @@
 #include <libft.h>
 #include <locale.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <memory.h>
 
 void test(char* format, int value);
 void test_UL(char* format, unsigned long value);
@@ -15,7 +17,7 @@ void test_locale();
 
 int main()
 {
-	setvbuf(stdout, NULL, _IONBF, 0);
+//	setbuf(stdout, NULL);
 
 //	setlocale(LC_ALL, "en_US.UTF-8");
 
@@ -35,14 +37,16 @@ int main()
 //	ft_printf("%lu\n", -12345612220);
 //	test("%lu", -12345612220U);
 
-//	test_str("%15.4S", (char *) L"我是一只猫。");
+//	test_str("%4.0S", (char *) L"我是一只猫。");
 //	test_str("%4.15S", L"我是一只猫。");
 
 //	test_str("%10S", (char*)(L"☭bar☭"));
 	// LIB C returns 0
 	// UB OR WHAT ????
+	test_str("%.2S", (char*)(L"\x53\x3abc\x81000"));
+//	printf("%S", (L"A\x3ABC\x81000"));
 //	test_str("%S", (char*)(L"\x53\x3abc\x81000"));
-	test_str("%S", (char*)(L"S\x100u"));
+//	test_str("%.S", (char*)(L"S\x100u"));
 //	ft_printf("%S%S", L"Α α", L"Β β");
 //	ft_printf("%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S",	L"Α α", L"Β β", L"Γ γ", L"Δ δ", L"Ε ε", L"Ζ ζ", L"Η η", L"Θ θ", L"Ι ι", L"Κ κ", L"Λ λ", L"Μ μ", L"Ν ν", L"Ξ ξ", L"Ο ο", L"Π π", L"Ρ ρ", L"Σ σ", L"Τ τ", L"Υ υ", L"Φ φ", L"Χ χ", L"Ψ ψ", L"Ω ω", L"");
 //	printf("%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S%S",	L"Α α", L"Β β", L"Γ γ", L"Δ δ", L"Ε ε", L"Ζ ζ", L"Η η", L"Θ θ", L"Ι ι", L"Κ κ", L"Λ λ", L"Μ μ", L"Ν ν", L"Ξ ξ", L"Ο ο", L"Π π", L"Ρ ρ", L"Σ σ", L"Τ τ", L"Υ υ", L"Φ φ", L"Χ χ", L"Ψ ψ", L"Ω ω", L"");
@@ -75,8 +79,9 @@ void test_str(char* format, char *string)
 	puts("");
 	puts("-- LIB --");
 	ret = printf(format, string);
-	printf(", %d", ret);
-	puts("\n");
+	printf(", %d\n", ret);
+	if (errno)
+		puts(strerror(errno));
 }
 void test(char* format, int value)
 {

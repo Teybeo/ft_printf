@@ -11,6 +11,7 @@
 #include <stddef.h>
 #include <limits.h>
 #include <wchar.h>
+#include <math.h>
 
 /*
  * sS p dD i oO uU xX cC
@@ -58,6 +59,9 @@ void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error);
 void print_string(t_array *output, t_arg arg, char *string);
 void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error);
 
+void print_float(t_array *output, t_arg arg, double value)
+;
+
 int		get_first_index(const char *string, char c)
 {
 	int	i;
@@ -103,6 +107,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 		{
 			arg.token = 'x';
 			arg.uppercase_prefix |= (*ptr == 'X');
+			ptr++;
+			break;
+		}
+		else if (*ptr == 'f')
+		{
+			arg.token = 'f';
 			ptr++;
 			break;
 		}
@@ -300,6 +310,10 @@ void process_arg(t_array *output, t_arg arg, va_list list, int *error)
 		else
 			print_hex(output, arg, (unsigned int)ul);
 	}
+	else if (arg.token == 'f')
+	{
+		print_float(output, arg, va_arg(list, double));
+	}
 	else if (arg.token == 'p')
 	{
 		ul = va_arg(list, unsigned long);
@@ -329,6 +343,48 @@ void process_arg(t_array *output, t_arg arg, va_list list, int *error)
 	{
 		print_percent(output, arg);
 	}
+}
+
+void print_float(t_array *output, t_arg arg, double value)
+{
+	unsigned long	int_part;
+	char			*int_string;
+
+	if (arg.has_precision == false)
+	{
+		arg.has_precision = true;
+		arg.precision = 6;
+	}
+	int_part = (unsigned long)value;
+	int_string = ft_ultoa_sign(int_part, arg.plus_sign);
+	array_append(output, int_string, ft_strlen(int_string));
+#if 1
+	if (arg.precision)
+		array_append(output, ".", 1);
+	unsigned int precision = 1;
+	double real_part = (value - (size_t)value);
+	while (precision <= arg.precision)
+	{
+		size_t tmp = (size_t)(real_part * pow(10, precision));
+		tmp %= 10;
+		char digit = ((char)tmp) + '0';
+		array_append(output, &digit, 1);
+		precision++;
+	}
+#else
+	int precision = (int)arg.precision;
+	if (precision)
+		array_append(output, ".", 1);
+	double temp_value = value;
+	while (precision > 0)
+	{
+		temp_value = value * 10;
+		char digit = ((char)temp_value) + '0';
+		array_append(output, &digit, 1);
+		value = temp_value - (unsigned long)temp_value;
+		precision--;
+	}
+#endif
 }
 
 void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error)

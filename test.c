@@ -9,11 +9,15 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <memory.h>
+#include <float.h>
 
 void test(char* format, int value);
 void test_UL(char* format, unsigned long value);
 void test_str(char* format, char *string);
 void test_locale();
+
+void test_lf(char* format, double value)
+;
 
 int main()
 {
@@ -43,7 +47,7 @@ int main()
 //	test_str("%10S", (char*)(L"☭bar☭"));
 	// LIB C returns 0
 	// UB OR WHAT ????
-	test_str("%.2S", (char*)(L"\x53\x3abc\x81000"));
+//	test_str("%.2S", (char*)(L"\x53\x3abc\x81000"));
 //	printf("%S", (L"A\x3ABC\x81000"));
 //	test_str("%S", (char*)(L"\x53\x3abc\x81000"));
 //	test_str("%.S", (char*)(L"S\x100u"));
@@ -61,12 +65,30 @@ int main()
 //	printf("%C", 0x40501);
 //	test("%C", (size_t)-2);
 //	test("%C", 256);
+
+	test_lf("%.60lf", FLT_MIN);
+	test_lf("%.60lf", FLT_MAX);
+
 	return 0;
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);
 	printf("MB_LEN_MAX: %d\n", MB_LEN_MAX);
 	printf("%s\n", setlocale(LC_ALL, NULL));
 
 	return 0;
+}
+
+void test_lf(char* format, double value)
+{
+	int ret;
+
+	printf("TEST: %s, %lf\n", format, value);
+	ret = ft_printf(format, value);
+	printf(", %d", ret);
+	puts("");
+	puts("-- LIB --");
+	ret = printf(format, value);
+	printf(", %d", ret);
+	puts("\n");
 }
 
 void test_str(char* format, char *string)

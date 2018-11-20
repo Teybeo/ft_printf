@@ -66,8 +66,20 @@ int main()
 //	test("%C", (size_t)-2);
 //	test("%C", 256);
 
-	test_lf("%.60lf", FLT_MIN);
-	test_lf("%.60lf", FLT_MAX);
+//	test_lf("%.60lf", FLT_MIN);
+//	test_lf("%.60lf", FLT_MAX);
+
+//	char buffer[128] = "";
+//	for (int i = 0; i < 255; ++i) {
+//		sprintf(buffer, "%%%c", i);
+//		ft_printf("%10s\n", buffer);
+//		printf("%10s\n", buffer, 42);
+//	}
+
+//	printf("%-010}bdf  %d hello\n", 20);
+//	ft_printf("%-010}bdf  %d hello", 20);
+
+	test_UL("%01p", NULL);
 
 	return 0;
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);

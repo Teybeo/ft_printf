@@ -62,6 +62,9 @@ void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error);
 void print_float(t_array *output, t_arg arg, double value)
 ;
 
+void print_invalid(t_array *output, t_arg arg)
+;
+
 int		get_first_index(const char *string, char c)
 {
 	int	i;
@@ -211,6 +214,12 @@ t_arg get_next_arg(const char *string, int *consumed)
 				ptr++;
 			ptr--;
 		}
+		else if (ft_isascii(*ptr))
+		{
+			arg.token = *ptr;
+			ptr++;
+			break;
+		}
 		ptr++;
 	}
 	*consumed = (int)(ptr - string);
@@ -237,7 +246,10 @@ int		ft_printf(const char *string, ...)
 			string += consumed;
 			process_arg(&output, arg, list, &error);
 			if (error)
+			{
+				free(output.data);
 				return -1;
+			}
 		}
 		else
 		{
@@ -343,6 +355,19 @@ void process_arg(t_array *output, t_arg arg, va_list list, int *error)
 	{
 		print_percent(output, arg);
 	}
+	else
+	{
+		print_invalid(output, arg);
+	}
+}
+void print_invalid(t_array *output, t_arg arg)
+{
+	if (arg.left_adjust == false)
+		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
+	if (ft_isprint(arg.token))
+		array_append(output, &arg.token, 1);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', arg.min_width - 1);
 }
 
 void print_float(t_array *output, t_arg arg, double value)
@@ -385,6 +410,7 @@ void print_float(t_array *output, t_arg arg, double value)
 		precision--;
 	}
 #endif
+	free(int_string);
 }
 
 void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error)
@@ -504,7 +530,7 @@ void print_address(t_array *output, t_arg arg, unsigned long ul)
 		hextoa_len--;
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
 	{
-		arg.precision = arg.min_width;
+		arg.precision = arg.min_width - 2;
 		arg.min_width = 0;
 	}
 	zero_count = ft_max(arg.precision - hextoa_len, 0);

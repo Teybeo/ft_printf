@@ -15,6 +15,8 @@ LIB_FILES += ft_ltoa.c
 LIB_FILES += ft_otoa.c
 LIB_FILES += ft_wctomb.c
 LIB_FILES += ft_isdigit.c
+LIB_FILES += ft_isascii.c
+LIB_FILES += ft_isprint.c
 LIB_FILES += ft_putchar_fd.c
 LIB_FILES += ft_putnbr_fd.c
 
@@ -52,9 +54,10 @@ curqui: $(NAME)
 	~/tools/curqui_test/ft_printf_tests
 
 mouli: $(NAME)
-	make -C ~/42FileChecker/moulitest_42projects/ft_printf_tests/
+	make -C ~/tools/42FileChecker/moulitest_42projects/ft_printf_tests/
 
 yapt: $(NAME)
+	make -C ~/tools/yapt re
 	~/tools/yapt/yapt.py ~/tools/yapt/test_files/regular_cases.py
 
 clean:

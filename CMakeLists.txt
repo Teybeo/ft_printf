@@ -16,6 +16,8 @@ set(SOURCES
     libft/ft_itoa.c
     libft/ft_atoi.c
     libft/ft_isdigit.c
+    libft/ft_isascii.c
+    libft/ft_isprint.c
     libft/ft_putnbr_fd.c
     libft/ft_putchar_fd.c
     libft/ft_otoa.c

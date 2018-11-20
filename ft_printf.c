@@ -591,7 +591,11 @@ void print_octal(t_array *output, t_arg arg, unsigned long o)
 	has_prefix = (arg.alternate_form && o != 0);
 	otoa = ft_otoa(o);
 	if (o == 0 && arg.has_precision && arg.precision == 0 && !arg.alternate_form)
-		return;
+	{
+		otoa[0] = '\0';
+		if (arg.min_width == 0)
+			return;
+	}
 	otoa_len = ft_strlen(otoa);
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
 	{

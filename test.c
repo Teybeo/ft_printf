@@ -79,7 +79,9 @@ int main()
 //	printf("%-010}bdf  %d hello\n", 20);
 //	ft_printf("%-010}bdf  %d hello", 20);
 
-	test_UL("%01p", NULL);
+	// printing 0 as octal with 0 precision but X width
+//	test_UL("%-05.o", 0);
+	test_UL("%#1.o", 0);
 
 	return 0;
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);

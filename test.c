@@ -16,8 +16,7 @@ void test_UL(char* format, unsigned long value);
 void test_str(char* format, char *string);
 void test_locale();
 
-void test_lf(char* format, double value)
-;
+void test_lf(char* format, double value);
 
 int main()
 {
@@ -67,7 +66,9 @@ int main()
 //	test("%C", 256);
 
 //	test_lf("%.60lf", FLT_MIN);
-//	test_lf("%.60lf", FLT_MAX);
+//	test_lf("%f", DBL_MAX);
+//	printf("%f", DBL_MAX);
+	test_lf("%20.60lf", 42420412345678901.);
 
 //	char buffer[128] = "";
 //	for (int i = 0; i < 255; ++i) {
@@ -81,7 +82,7 @@ int main()
 
 	// printing 0 as octal with 0 precision but X width
 //	test_UL("%-05.o", 0);
-	test_UL("%#1.o", 0);
+//	test_UL("%#1.o", 0);
 
 	return 0;
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);

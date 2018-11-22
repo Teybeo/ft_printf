@@ -318,8 +318,9 @@ void process_arg(t_array *output, t_arg arg, va_list list, int *error)
 		else
 			print_hex(output, arg, (unsigned int)ul);
 	}
-	else if (arg.token == 'f')
+	else if (arg.token == 'f' || arg.token == 'F')
 	{
+//		if (arg.long_modifier)
 		print_float(output, arg, va_arg(list, double));
 	}
 	else if (arg.token == 'p')
@@ -368,35 +369,53 @@ void print_invalid(t_array *output, t_arg arg)
 
 void print_float(t_array *output, t_arg arg, double value)
 {
-	unsigned long	int_part;
+	long			int_part;
 	char			*int_string;
+	char			has_sign_char;
+	size_t			int_digit_count;
+	size_t			digit_count; // Include the '.' and fractional part
 
 	if (arg.has_precision == false)
 	{
 		arg.has_precision = true;
 		arg.precision = 6;
 	}
-	int_part = (unsigned long)value;
-	int_string = ft_ultoa_sign(int_part, arg.plus_sign);
+//	char is_neg = value < 0;
+//	value *= is_neg * -1;
+	int_part = (long int)value;
+	int_string = ft_ltoa_sign(int_part, arg.plus_sign);
+	int_digit_count = ft_strlen(int_string);
+	has_sign_char = ft_isdigit(int_string[0]) == false;
+	digit_count = int_digit_count + (arg.has_precision && arg.precision) + arg.precision;
+	ft_memcpy(int_string, int_string + has_sign_char, int_digit_count);
+	int zero_count = arg.pad_with_zero * ft_max(arg.min_width - (digit_count + has_sign_char + arg.precision), 0);
+	int blank_count = ft_max(arg.min_width - (digit_count + has_sign_char + zero_count), 0);
+//	printf("zero_count: %d\n", zero_count);
+//	printf("blank_count: %d\n", blank_count);
+	if (arg.left_adjust == false)
+		append_n_chars(output, ' ', blank_count);
+	if (has_sign_char)
+		array_append(output, (value < 0) ? "-" : &arg.plus_sign, 1);
+	append_n_chars(output, '0', zero_count);
+//	array_append(output, itoa, digit_count);
 	array_append(output, int_string, ft_strlen(int_string));
-#if 1
 	if (arg.precision)
-		array_append(output, ".", 1);
+		array_append(output, ".", 1);;
+#if 0
 	unsigned int precision = 1;
-	double real_part = (value - (size_t)value);
+	long double real_part = (value - (size_t)value);
 	while (precision <= arg.precision)
 	{
-		size_t tmp = (size_t)(real_part * pow(10, precision));
+		size_t tmp = (size_t)(real_part * powl(10, precision));
 		tmp %= 10;
-		char digit = ((char)tmp) + '0';
+		char digit = (char)(tmp + '0');
 		array_append(output, &digit, 1);
 		precision++;
 	}
 #else
 	int precision = (int)arg.precision;
-	if (precision)
-		array_append(output, ".", 1);
-	double temp_value = value;
+	value = fabs(value - (long)value);
+	long double temp_value;
 	while (precision > 0)
 	{
 		temp_value = value * 10;
@@ -406,6 +425,8 @@ void print_float(t_array *output, t_arg arg, double value)
 		precision--;
 	}
 #endif
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
 	free(int_string);
 }
 

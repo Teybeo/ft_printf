@@ -65,11 +65,15 @@ int main()
 //	test("%C", (size_t)-2);
 //	test("%C", 256);
 
-//	test_lf("%.60lf", FLT_MIN);
+//	test_lf("%.60lf", FLT_MAX);
 //	test_lf("%f", DBL_MAX);
 //	printf("%f", DBL_MAX);
-	test_lf("%20.60lf", 42420412345678901.);
+//	test_lf("%20.60lf", 42420412345678901.);
+//	test_lf("%20.60lf", 0.42420412345678901);
+	test_lf("%10.5lf", -10.5);
+//	printf("%.1lf", 42.);
 
+//	printf
 //	char buffer[128] = "";
 //	for (int i = 0; i < 255; ++i) {
 //		sprintf(buffer, "%%%c", i);

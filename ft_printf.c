@@ -2,6 +2,7 @@
 #include "libft.h"
 
 #include "array.h"
+#include "parsing.h"
 
 #include <stdio.h>
 #include <zconf.h>
@@ -23,27 +24,6 @@
  *
  * hh, h, l, ll, j, et .
  */
-
-typedef struct s_arg t_arg;
-
-typedef void (*ft_token)(t_arg arg);
-
-struct s_arg
-{
-	bool alternate_form;
-	bool left_adjust; // Default to right adjust
-	bool pad_with_zero; // Default to blank-padding
-	bool short_modifier;
-	bool double_short_modifier;
-	bool long_modifier;
-	bool has_precision;
-	size_t min_width;
-	size_t precision;
-//	ft_token fn;
-	char token;
-	char plus_sign;
-	bool uppercase_prefix;
-};
 
 void process_arg(t_array *output, t_arg arg, va_list list, int *error);
 void consume_non_arg(const char *string, t_array *array, int *consumed);
@@ -71,7 +51,8 @@ int		get_first_index(const char *string, char c)
 	return (string[i] != '\0' ? i : -1);
 }
 
-t_arg get_next_arg(const char *string, int *consumed)
+
+t_arg get_next_arg2(const char *string, int *consumed)
 {
 	const char	*ptr;
 	t_arg		arg;
@@ -239,6 +220,7 @@ int		ft_printf(const char *string, ...)
 		{
 			string++;
 			arg = get_next_arg(string, &consumed);
+//			arg = get_next_arg2(string, &consumed);
 			string += consumed;
 			process_arg(&output, arg, list, &error);
 			if (error)

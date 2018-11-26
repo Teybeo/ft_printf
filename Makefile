@@ -1,6 +1,7 @@
 NAME := libftprintf.a
 
 FILES += ft_printf.c
+FILES += parsing.c
 
 LIB_FILES += array.c
 LIB_FILES += ft_strlen.c
@@ -16,6 +17,8 @@ LIB_FILES += ft_otoa.c
 LIB_FILES += ft_wctomb.c
 LIB_FILES += ft_isdigit.c
 LIB_FILES += ft_isascii.c
+LIB_FILES += ft_tolower.c
+LIB_FILES += ft_toupper.c
 LIB_FILES += ft_isprint.c
 LIB_FILES += ft_putchar_fd.c
 LIB_FILES += ft_putnbr_fd.c

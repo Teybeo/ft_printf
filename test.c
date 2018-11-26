@@ -20,7 +20,7 @@ void test_lf(char* format, double value);
 
 int main()
 {
-//	setbuf(stdout, NULL);
+	setbuf(stdout, NULL);
 
 //	setlocale(LC_ALL, "en_US.UTF-8");
 
@@ -70,7 +70,7 @@ int main()
 //	printf("%f", DBL_MAX);
 //	test_lf("%20.60lf", 42420412345678901.);
 //	test_lf("%20.60lf", 0.42420412345678901);
-	test_lf("%10.5lf", -10.5);
+//	test_lf("%10.5lf", -10.5); // BUG HERE
 //	printf("%.1lf", 42.);
 
 //	printf
@@ -87,6 +87,19 @@ int main()
 	// printing 0 as octal with 0 precision but X width
 //	test_UL("%-05.o", 0);
 //	test_UL("%#1.o", 0);
+
+	for (unsigned char i = 0; i < 255; ++i)
+	{
+		if (i == 42 || i == 110)
+			continue;
+		char buffer[] = "%20Ws";
+		buffer[3] = i;
+//		ft_printf("i: %d (%c) -> [", i, i);
+		test_str(buffer, "lol");
+//		ft_printf("]\n");
+	}
+
+
 
 	return 0;
 	printf("MB_CUR_MAX: %d\n", MB_CUR_MAX);

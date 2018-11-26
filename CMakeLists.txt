@@ -17,6 +17,8 @@ set(SOURCES
     libft/ft_atoi.c
     libft/ft_isdigit.c
     libft/ft_isascii.c
+    libft/ft_tolower.c
+    libft/ft_toupper.c
     libft/ft_isprint.c
     libft/ft_putnbr_fd.c
     libft/ft_putchar_fd.c
@@ -25,8 +27,12 @@ set(SOURCES
     libft/ft_wctomb.c)
 
 set(TEST_SOURCES
-        ft_printf.c
-        test.c)
+    ft_printf.c
+    parsing.c
+    parsing.h
+    parsing_functions_1.c
+    parsing_functions_2.c
+    test.c)
 
 add_library(printf ${SOURCES})
 

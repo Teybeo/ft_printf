@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memset.c                                           :+:      :+:    :+:   */
+/*   ft_toupper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tdarchiv <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/05 12:48:35 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/22 13:02:15 by tdarchiv         ###   ########.fr       */
+/*   Created: 2018/04/07 16:15:57 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/04/07 16:16:47 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-
-void	*ft_memset(void *dest, int value, size_t count)
+int	ft_toupper(int c)
 {
-	size_t i;
-
-	i = 0;
-	while (i < count)
-	{
-		((char*)dest)[i] = (unsigned char)(value);
-		i++;
-	}
-	return (dest);
+	if (c >= 'a' && c <= 'z')
+		return (c - 32);
+	return (c);
 }

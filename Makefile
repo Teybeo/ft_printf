@@ -2,6 +2,8 @@ NAME := libftprintf.a
 
 FILES += ft_printf.c
 FILES += parsing.c
+FILES += parsing_functions_1.c
+FILES += parsing_functions_2.c
 
 LIB_FILES += array.c
 LIB_FILES += ft_strlen.c
@@ -30,7 +32,7 @@ OBJ_LIST := $(FILES:.c=.o)
 
 OBJS := $(addprefix $(OBJ_DIR)/,$(OBJ_LIST))
 
-FLAGS := -Wall -Wextra -Werror
+FLAGS := -Wall -Wextra -Werror -O2 -flto
 
 INCLUDES := -I libft/ -I .
 

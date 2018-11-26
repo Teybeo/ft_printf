@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 16:11:18 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/26 21:24:52 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/26 21:25:42 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ t_arg	get_next_arg(const char *string, int *consumed)
 
 	if (parsing_fn_table[0] == NULL)
 		init_table(parsing_fn_table);
-	arg = (t_arg){0};
+//	arg = (t_arg){0};
+	ft_memset(&arg, 0, sizeof(arg));
 	ptr = string;
 	while (*ptr != '\0')
 	{

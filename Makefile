@@ -5,6 +5,8 @@ FILES += parsing.c
 FILES += parsing_functions_1.c
 FILES += parsing_functions_2.c
 FILES += printing.c
+FILES += printing_functions_1.c
+FILES += printing_functions_2.c
 
 LIB_FILES += array.c
 LIB_FILES += ft_strlen.c

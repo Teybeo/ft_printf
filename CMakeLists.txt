@@ -32,8 +32,10 @@ set(TEST_SOURCES
     parsing.h
     parsing_functions_1.c
     parsing_functions_2.c
-    test.c
-    printing.c printing_functions_1.c printing_functions_2.c)
+    printing.c
+    printing_functions_1.c
+    printing_functions_2.c
+    test.c)
 
 add_library(printf ${SOURCES})
 

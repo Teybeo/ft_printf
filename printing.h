@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printing.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/27 17:53:46 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/27 17:53:47 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PRINTING_H
 # define PRINTING_H
 
@@ -32,7 +44,5 @@ void	print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error);
 void	print_float(t_array *output, t_arg arg, double value);
 void	print_invalid(t_array *output, t_arg arg, va_list list, int *error);
 void	print_percent(t_array *output, t_arg arg, va_list list, int *error);
-
-
 
 #endif

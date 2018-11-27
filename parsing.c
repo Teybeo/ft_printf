@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 16:11:18 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/26 21:25:42 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/27 17:19:12 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	init_table(t_parsing_fn table[255])
 	while (i < 255)
 		table[i++] = simple_token;
 	table['f'] = simple_token;
+	table['F'] = simple_token;
 	table['p'] = simple_token;
 	table['C'] = simple_token;
 	table['S'] = simple_token;
@@ -76,7 +77,6 @@ t_arg	get_next_arg(const char *string, int *consumed)
 
 	if (parsing_fn_table[0] == NULL)
 		init_table(parsing_fn_table);
-//	arg = (t_arg){0};
 	ft_memset(&arg, 0, sizeof(arg));
 	ptr = string;
 	while (*ptr != '\0')

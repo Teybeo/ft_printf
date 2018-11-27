@@ -95,7 +95,7 @@ int main()
 		char buffer[] = "%20Ws";
 		buffer[3] = i;
 //		ft_printf("i: %d (%c) -> [", i, i);
-		test_str(buffer, "lol");
+//		test_str(buffer, "lol");
 //		ft_printf("]\n");
 	}
 

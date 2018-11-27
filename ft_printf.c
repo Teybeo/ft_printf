@@ -3,9 +3,10 @@
 
 #include "array.h"
 #include "parsing.h"
+#include "printing.h"
 
 #include <stdio.h>
-#include <zconf.h>
+#include <unistd.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -15,31 +16,18 @@
 #include <math.h>
 
 /*
- * sS p dD i oO uU xX cC
- * #
- * 0
- * -
- * +
- * ' '
- *
- * hh, h, l, ll, j, et .
- */
+** sS p dD i oO uU xX cC
+** #
+** 0
+** -
+** +
+** ' '
+**
+** hh, h, l, ll, j, et .
+*/
 
 void process_arg(t_array *output, t_arg arg, va_list list, int *error);
 void consume_non_arg(const char *string, t_array *array, int *consumed);
-
-void print_int(t_array *output, t_arg arg, long l);
-void print_octal(t_array *output, t_arg arg, unsigned long o);
-void print_hex(t_array *output, t_arg arg, unsigned long o);
-void print_uint(t_array *output, t_arg arg, unsigned long l);
-void print_percent(t_array *output, t_arg arg);
-void print_address(t_array *output, t_arg arg, unsigned long ul);
-void print_char(t_array *output, t_arg arg, unsigned char uc);
-void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error);
-void print_string(t_array *output, t_arg arg, char *string);
-void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error);
-void print_float(t_array *output, t_arg arg, double value);
-void print_invalid(t_array *output, t_arg arg);
 
 int		get_first_index(const char *string, char c)
 {
@@ -49,158 +37,6 @@ int		get_first_index(const char *string, char c)
 	while (string[i] != c && string[i] != '\0')
 		i++;
 	return (string[i] != '\0' ? i : -1);
-}
-
-
-t_arg get_next_arg2(const char *string, int *consumed)
-{
-	const char	*ptr;
-	t_arg		arg;
-
-	arg = (t_arg){};
-	ptr = string;
-	while (*ptr != '\0')
-	{
-		if (*ptr == 'd' || *ptr == 'i' || *ptr == 'D')
-		{
-			arg.token = 'd';
-			arg.long_modifier |= (*ptr == 'D');
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'u' || *ptr == 'U')
-		{
-			arg.token = 'u';
-			arg.long_modifier |= (*ptr == 'U');
-			arg.plus_sign = false;
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'o' || (*ptr == 'O'))
-		{
-			arg.token = 'o';
-			arg.long_modifier |= (*ptr == 'O');
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'x' || (*ptr == 'X'))
-		{
-			arg.token = 'x';
-			arg.uppercase_prefix |= (*ptr == 'X');
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'f')
-		{
-			arg.token = 'f';
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'p')
-		{
-			arg.token = 'p';
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'c')
-		{
-			arg.token = arg.long_modifier ? 'C' : 'c';
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'C')
-		{
-			arg.token = 'C';
-			ptr++;
-			break;
-		}
-		else if (*ptr == 's')
-		{
-			arg.token = arg.long_modifier ? 'S' : 's';
-			ptr++;
-			break;
-		}
-		else if (*ptr == 'S')
-		{
-			arg.token = 'S';
-			ptr++;
-			break;
-		}
-		else if (*ptr == '%')
-		{
-			arg.token = '%';
-			ptr++;
-			break;
-		}
-		else if (*ptr == ' ')
-		{
-			if (arg.plus_sign != '+')
-				arg.plus_sign = ' ';
-		}
-		else if (*ptr == '+')
-		{
-			arg.plus_sign = '+';
-		}
-		else if (*ptr == '-')
-		{
-			arg.left_adjust = true;
-			arg.pad_with_zero = false;
-		}
-		else if (*ptr == 'l' || *ptr == 'j')
-		{
-			arg.long_modifier = true;
-		}
-		else if (*ptr == 'h')
-		{
-			if (arg.short_modifier)
-			{
-				arg.double_short_modifier = true;
-				arg.short_modifier = false;
-			}
-			arg.short_modifier = true;
-		}
-		else if (*ptr == 'z')
-		{
-			arg.long_modifier = true;
-		}
-		else if (*ptr == '#')
-		{
-			arg.alternate_form = true;
-		}
-		else if (*ptr == '.')
-		{
-			ptr++;
-			arg.precision = ft_atoi(ptr);
-			arg.has_precision = true;
-			while (ft_isdigit(*ptr) && *ptr != '\0')
-				ptr++;
-			ptr--;
-		}
-		else if (*ptr == '0')
-		{
-			if (arg.left_adjust == false)
-				arg.pad_with_zero = true;
-			while (*ptr == '0')
-				ptr++;
-			ptr--;
-		}
-		else if (ft_isdigit(*ptr))
-		{
-			arg.min_width = ft_atoi(ptr);
-			while (ft_isdigit(*ptr) && *ptr != '\0')
-				ptr++;
-			ptr--;
-		}
-		else if (ft_isascii(*ptr))
-		{
-			arg.token = *ptr;
-			ptr++;
-			break;
-		}
-		ptr++;
-	}
-	*consumed = (int)(ptr - string);
-	return (arg);
 }
 
 int		ft_printf(const char *string, ...)
@@ -220,9 +56,9 @@ int		ft_printf(const char *string, ...)
 		{
 			string++;
 			arg = get_next_arg(string, &consumed);
-//			arg = get_next_arg2(string, &consumed);
 			string += consumed;
-			process_arg(&output, arg, list, &error);
+//			process_arg(&output, arg, list, &error);
+			process_arg2(&output, arg, list, &error);
 			if (error)
 			{
 				free(output.data);
@@ -332,14 +168,15 @@ void process_arg(t_array *output, t_arg arg, va_list list, int *error)
 	}
 	else if (arg.token == '%')
 	{
-		print_percent(output, arg);
+		print_percent(output, arg, list, error);
 	}
 	else
 	{
-		print_invalid(output, arg);
+		print_invalid(output, arg, list, error);
 	}
 }
-void print_invalid(t_array *output, t_arg arg)
+
+void print_invalid(t_array *output, t_arg arg, va_list list, int *error)
 {
 	if (arg.left_adjust == false)
 		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
@@ -347,6 +184,8 @@ void print_invalid(t_array *output, t_arg arg)
 		array_append(output, &arg.token, 1);
 	if (arg.left_adjust)
 		append_n_chars(output, ' ', arg.min_width - 1);
+	(void)list;
+	(void)error;
 }
 
 void print_float(t_array *output, t_arg arg, double value)
@@ -419,7 +258,7 @@ void print_wchar(t_array *output, t_arg arg, wchar_t wc, int *error)
 	int		byte_count;
 
 	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
-	char buffer[MB_LEN_MAX] = {};
+	char buffer[MB_LEN_MAX] = {0};
 	byte_count = ft_wctomb(buffer, wc);
 	if (byte_count == 0)
 	{
@@ -470,7 +309,7 @@ void print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error)
 	size_t	written_byte_count;
 	int		blank_count;
 	char	pad_char;
-	char	buffer[MB_LEN_MAX] = {};
+	char	buffer[MB_LEN_MAX] = {0};
 
 	pad_char = (arg.pad_with_zero && !arg.left_adjust) ? '0' : ' ';
 	string = (string) ? string : L"(null)";
@@ -672,13 +511,15 @@ void print_uint(t_array *output, t_arg arg, unsigned long l)
 	free(ultoa);
 }
 
-void print_percent(t_array *output, t_arg arg)
+void print_percent(t_array *output, t_arg arg, va_list list, int *error)
 {
 	if (arg.left_adjust == false)
 		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
 	array_append(output, "%", 1);
 	if (arg.left_adjust)
 		append_n_chars(output, ' ', arg.min_width - 1);
+	(void)list;
+	(void)error;
 }
 
 void consume_non_arg(const char *string, t_array *array, int *consumed)

@@ -4,6 +4,7 @@ FILES += ft_printf.c
 FILES += parsing.c
 FILES += parsing_functions_1.c
 FILES += parsing_functions_2.c
+FILES += printing.c
 
 LIB_FILES += array.c
 LIB_FILES += ft_strlen.c
@@ -62,8 +63,8 @@ mouli: $(NAME)
 	make -C ~/tools/42FileChecker/moulitest_42projects/ft_printf_tests/
 
 yapt: $(NAME)
-	make -C ~/tools/yapt re
-	~/tools/yapt/yapt.py ~/tools/yapt/test_files/regular_cases.py
+	make -C ~/tools/YAPT re
+	~/tools/YAPT/yapt.py ~/tools/YAPT/test_files/regular_cases.py
 
 clean:
 	/bin/rm -f $(OBJS)

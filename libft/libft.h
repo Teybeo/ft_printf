@@ -74,6 +74,7 @@ size_t			ft_get_mb_size(const wchar_t *s, int *error);
 size_t			ft_get_fitting_mb_size(wchar_t *s, size_t max_size, int *error);
 
 int				ft_max(int a, int b);
+double			ft_abs_double(double a);
 
 void			*ft_memalloc(size_t size);
 void			ft_memdel(void **data);

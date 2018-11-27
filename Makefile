@@ -4,15 +4,19 @@ FILES += ft_printf.c
 FILES += parsing.c
 FILES += parsing_functions_1.c
 FILES += parsing_functions_2.c
-FILES += printing.c
 FILES += printing_functions_1.c
 FILES += printing_functions_2.c
+FILES += printing_functions_3.c
+FILES += processing.c
+FILES += processing_functions_1.c
+FILES += processing_functions_2.c
 
 LIB_FILES += array.c
 LIB_FILES += ft_strlen.c
 LIB_FILES += ft_memcpy.c
 LIB_FILES += ft_memset.c
 LIB_FILES += ft_max.c
+LIB_FILES += ft_abs_double.c
 LIB_FILES += ft_realloc.c
 LIB_FILES += ft_atoi.c
 LIB_FILES += ft_itoa.c
@@ -35,7 +39,7 @@ OBJ_LIST := $(FILES:.c=.o)
 
 OBJS := $(addprefix $(OBJ_DIR)/,$(OBJ_LIST))
 
-FLAGS := -Wall -Wextra -Werror -O2 -flto
+FLAGS := -Wall -Wextra -Werror
 
 INCLUDES := -I libft/ -I .
 

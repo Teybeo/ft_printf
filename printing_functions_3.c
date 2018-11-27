@@ -1,6 +1,6 @@
-#include <stdlib.h>
 #include "printing.h"
 
+#include <stdlib.h>
 #include "libft.h"
 
 void print_invalid(t_array *output, t_arg arg, va_list list, int *error)
@@ -62,7 +62,7 @@ void print_float(t_array *output, t_arg arg, double value)
 	}
 #else
 	int precision = (int)arg.precision;
-	value = fabs(value - (long)value);
+	value = ft_abs_double(value - (long)value);
 	long double temp_value;
 	while (precision > 0)
 	{

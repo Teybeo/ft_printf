@@ -24,7 +24,7 @@ set(SOURCES
     libft/ft_putchar_fd.c
     libft/ft_otoa.c
     libft/ft_hextoa.c
-    libft/ft_wctomb.c)
+    libft/ft_wctomb.c libft/ft_abs_double.c)
 
 set(TEST_SOURCES
     ft_printf.c

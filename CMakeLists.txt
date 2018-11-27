@@ -29,13 +29,14 @@ set(SOURCES
 set(TEST_SOURCES
     ft_printf.c
     parsing.c
-    parsing.h
     parsing_functions_1.c
     parsing_functions_2.c
-    printing.c
+    processing.c
+    processing_functions_1.c
+    processing_functions_2.c
     printing_functions_1.c
     printing_functions_2.c
-    test.c)
+    test.c printing_functions_3.c)
 
 add_library(printf ${SOURCES})
 
@@ -44,3 +45,4 @@ add_executable(printf_test ${TEST_SOURCES})
 target_link_libraries(printf_test PUBLIC printf)
 
 target_include_directories(printf PUBLIC libft)
+target_include_directories(printf PUBLIC .)

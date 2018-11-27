@@ -1,83 +1,132 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   printing_functions_1.c                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 17:48:23 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/27 17:48:25 by tdarchiv         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "printing.h"
 
-void	print_d(t_array *output, t_arg arg, va_list list, int *error)
-{
-	long	l;
+#include <stdlib.h>
+#include "libft.h"
 
-	l = va_arg(list, long);
-	if (arg.long_modifier)
-		print_int(output, arg, l);
-	else if (arg.double_short_modifier)
-		print_int(output, arg, (char)l);
-	else if (arg.short_modifier)
-		print_int(output, arg, (short)l);
-	else
-		print_int(output, arg, (int)l);
-	(void)error;
+void print_hex(t_array *output, t_arg arg, unsigned long o)
+{
+	size_t	hextoa_len;
+	char	*hextoa;
+	int		blank_count;
+	int		zero_count;
+	int		has_prefix;
+
+	has_prefix = (arg.alternate_form && o != 0);
+	hextoa = ft_hextoa(o, arg.uppercase_prefix);
+	if (o == 0 && arg.has_precision && arg.precision == 0)
+		hextoa[0] = '\0';
+	if (o == 0 && arg.has_precision && arg.precision == 0 && arg.min_width == 0)
+		return;
+	hextoa_len = ft_strlen(hextoa);
+	arg.min_width = ft_max(arg.min_width - has_prefix * 2, 0);
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width;
+		arg.min_width = 0;
+	}
+	zero_count = ft_max(arg.precision - hextoa_len, 0);
+//	zero_count = (zero_count) ? zero_count : has_prefix;
+	blank_count = ft_max(arg.min_width - (hextoa_len + zero_count), 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, ' ', blank_count);
+	if (arg.alternate_form && o > 0)
+		array_append(output, arg.uppercase_prefix ? "0X" : "0x", 2);
+	append_n_chars(output, '0', zero_count);
+	array_append(output, hextoa, hextoa_len);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
+	free(hextoa);
 }
 
-void	print_u(t_array *output, t_arg arg, va_list list, int *error)
+void print_octal(t_array *output, t_arg arg, unsigned long o)
 {
-	unsigned long	ul;
+	size_t	otoa_len;
+	char	*otoa;
+	int		blank_count;
+	int		zero_count;
+	int		has_prefix;
 
-	ul = va_arg(list, unsigned long);
-	if (arg.long_modifier)
-		print_uint(output, arg, ul);
-	else if (arg.double_short_modifier)
-		print_uint(output, arg, (unsigned char)ul);
-	else if (arg.short_modifier)
-		print_uint(output, arg, (unsigned short)ul);
-	else
-		print_uint(output, arg, (unsigned int)ul);
-	(void)error;
+	has_prefix = (arg.alternate_form && o != 0);
+	otoa = ft_otoa(o);
+	if (o == 0 && arg.has_precision && arg.precision == 0 && !arg.alternate_form)
+	{
+		otoa[0] = '\0';
+		if (arg.min_width == 0)
+			return;
+	}
+	otoa_len = ft_strlen(otoa);
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width;
+		arg.min_width = 0;
+	}
+	zero_count = ft_max(arg.precision - otoa_len, 0);
+	zero_count = (zero_count) ? zero_count : has_prefix;
+	blank_count = ft_max(arg.min_width - (otoa_len + zero_count), 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, ' ', blank_count);
+	append_n_chars(output, '0', zero_count);
+	array_append(output, otoa, otoa_len);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
+	free(otoa);
 }
 
-void	print_o(t_array *output, t_arg arg, va_list list, int *error)
+void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 {
-	unsigned long	ul;
+	int		is_neg;
+	int		has_sign_char;
+	size_t	blank_count;
+	size_t	zero_count;
+	size_t	digit_count;
 
-	ul = va_arg(list, unsigned long);
-	if (arg.long_modifier)
-		print_octal(output, arg, ul);
-	else if (arg.double_short_modifier)
-		print_octal(output, arg, (unsigned char)ul);
-	else if (arg.short_modifier)
-		print_octal(output, arg, (unsigned short)ul);
-	else
-		print_octal(output, arg, (unsigned int)ul);
-	(void)error;
+	is_neg = itoa[0] == '-';
+	has_sign_char = ft_isdigit(itoa[0]) == false && (itoa[0] != '\0');
+	digit_count = ft_max(itoa_len - has_sign_char, 0);
+	ft_memcpy(itoa, itoa + has_sign_char, digit_count);
+	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
+	{
+		arg.precision = arg.min_width - has_sign_char;
+		arg.min_width = 0;
+	}
+	zero_count =  ft_max(arg.precision - digit_count, 0);
+	blank_count = ft_max(arg.min_width - (itoa_len + zero_count), 0);
+	if (arg.left_adjust == false)
+		append_n_chars(output, ' ', blank_count);
+	if (has_sign_char)
+		array_append(output, (is_neg) ? "-" : &arg.plus_sign, 1);
+	append_n_chars(output, '0', zero_count);
+	array_append(output, itoa, digit_count);
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
 }
 
-void	print_x(t_array *output, t_arg arg, va_list list, int *error)
-{
-	unsigned long	ul;
+/*
+** If working precision is 0 and value is 0, dont print 0 but still print prefix
+*/
 
-	ul = va_arg(list, unsigned long);
-	if (arg.long_modifier)
-		print_hex(output, arg, ul);
-	else if (arg.double_short_modifier)
-		print_hex(output, arg, (unsigned char)ul);
-	else if (arg.short_modifier)
-		print_hex(output, arg, (unsigned short)ul);
-	else
-		print_hex(output, arg, (unsigned int)ul);
-	(void)error;
+void print_int(t_array *output, t_arg arg, long l)
+{
+	char	*ltoa;
+
+	ltoa = ft_ltoa_sign(l, arg.plus_sign);
+	if (l == 0 && arg.has_precision && arg.precision == 0)
+		ltoa[arg.plus_sign != 0] = '\0';
+	print_integer(output, arg, ltoa, ft_strlen(ltoa));
+	free(ltoa);
 }
 
-void	print_p(t_array *output, t_arg arg, va_list list, int *error)
+/*
+** If precision is 0 and value is 0, dont print 0 but still print prefix
+*/
+
+void print_uint(t_array *output, t_arg arg, unsigned long l)
 {
-	print_address(output, arg, va_arg(list, unsigned long));
-	(void)error;
+	char	*ultoa;
+
+	ultoa = ft_ultoa_sign(l, arg.plus_sign);
+	if (l == 0 && arg.has_precision && arg.precision == 0)
+		ultoa[arg.plus_sign != 0] = '\0';
+	print_integer(output, arg, ultoa, ft_strlen(ultoa));
+	free(ultoa);
 }

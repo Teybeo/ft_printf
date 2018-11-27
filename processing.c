@@ -6,14 +6,15 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 17:48:48 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/27 17:48:48 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/27 18:07:48 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printing.h"
+#include "processing.h"
 
 #include "parsing.h"
 #include "array.h"
+#include "printing.h"
 
 #include <stdarg.h>
 

@@ -1,36 +1,10 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   printing.h                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/27 17:53:46 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/27 17:53:47 by tdarchiv         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+#ifndef PRINTF_PRINTING_H
+#define PRINTF_PRINTING_H
 
-#ifndef PRINTING_H
-# define PRINTING_H
+#include "array.h"
+#include "parsing.h"
 
-# include "array.h"
-# include "parsing.h"
-
-# include <stdarg.h>
-
-void	process_arg2(t_array *output, t_arg arg, va_list list, int *error);
-
-void	print_d(t_array *output, t_arg arg, va_list list, int *error);
-void	print_u(t_array *output, t_arg arg, va_list list, int *error);
-void	print_o(t_array *output, t_arg arg, va_list list, int *error);
-void	print_x(t_array *output, t_arg arg, va_list list, int *error);
-void	print_p(t_array *output, t_arg arg, va_list list, int *error);
-
-void	print_c(t_array *output, t_arg arg, va_list list, int *error);
-void	print_wc(t_array *output, t_arg arg, va_list list, int *error);
-void	print_s(t_array *output, t_arg arg, va_list list, int *error);
-void	print_ws(t_array *output, t_arg arg, va_list list, int *error);
-void	print_f(t_array *output, t_arg arg, va_list list, int *error);
+#include <stdarg.h>
 
 void	print_int(t_array *output, t_arg arg, long l);
 void	print_octal(t_array *output, t_arg arg, unsigned long o);
@@ -44,5 +18,7 @@ void	print_wstring(t_array *output, t_arg arg, wchar_t *string, int *error);
 void	print_float(t_array *output, t_arg arg, double value);
 void	print_invalid(t_array *output, t_arg arg, va_list list, int *error);
 void	print_percent(t_array *output, t_arg arg, va_list list, int *error);
+
+void	append_n_chars(t_array *array, char c, int i);
 
 #endif

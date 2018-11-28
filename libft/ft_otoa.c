@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_otoa.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/28 15:29:15 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/28 15:29:15 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 
 static unsigned long	ft_power_8(int power)
@@ -7,7 +19,7 @@ static unsigned long	ft_power_8(int power)
 	return (8 * ft_power_8(power - 1));
 }
 
-static void	*otoa_alloc_string(int *len, unsigned long nb)
+static void				*otoa_alloc_string(int *len, unsigned long nb)
 {
 	unsigned long	number;
 	int				str_len;
@@ -30,7 +42,7 @@ static void	*otoa_alloc_string(int *len, unsigned long nb)
 	return (temp);
 }
 
-char		*ft_otoa(unsigned long nb)
+char					*ft_otoa(unsigned long nb)
 {
 	unsigned long	diviseur;
 	int				len;

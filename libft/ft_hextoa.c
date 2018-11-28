@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_hextoa.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/28 15:28:40 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/28 15:28:42 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <stdbool.h>
 
@@ -8,7 +20,7 @@ static unsigned long	ft_power_16(int power)
 	return (16 * ft_power_16(power - 1));
 }
 
-static void	*hextoa_alloc_string(int *len, unsigned long nb)
+static void				*hextoa_alloc_string(int *len, unsigned long nb)
 {
 	unsigned long	number;
 	int				str_len;
@@ -31,7 +43,7 @@ static void	*hextoa_alloc_string(int *len, unsigned long nb)
 	return (temp);
 }
 
-char		*ft_hextoa(unsigned long nb, bool uppercase)
+char					*ft_hextoa(unsigned long nb, bool uppercase)
 {
 	unsigned long	diviseur;
 	int				len;

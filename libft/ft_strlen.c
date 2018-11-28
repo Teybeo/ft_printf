@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/06 18:06:47 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/09 15:36:17 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/28 15:32:59 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ size_t	ft_get_mb_size(const wchar_t *s, int *error)
 		if (mbchar_size == 0)
 		{
 			*error = 1;
-			return 0;
+			return (0);
 		}
 		byte_count += mbchar_size;
 		i++;
@@ -63,14 +63,14 @@ size_t	ft_get_fitting_mb_size(wchar_t *s, size_t max_size, int *error)
 		if (mbchar_size == 0)
 		{
 			*error = 1;
-			return 0;
+			return (0);
 		}
 		byte_count += mbchar_size;
 		if (byte_count == max_size)
-			return byte_count;
+			return (byte_count);
 		if (byte_count > max_size)
-			return byte_count - mbchar_size;
+			return (byte_count - mbchar_size);
 		i++;
 	}
-	return byte_count;
+	return (byte_count);
 }

@@ -72,6 +72,9 @@ yapt: $(NAME)
 	make -C ~/tools/YAPT re
 	~/tools/YAPT/yapt.py ~/tools/YAPT/test_files/regular_cases.py
 
+norme:
+	norminette $(FILES)
+
 clean:
 	/bin/rm -f $(OBJS)
 

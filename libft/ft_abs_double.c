@@ -6,11 +6,11 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 18:36:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/27 18:36:39 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/28 15:28:17 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 double	ft_abs_double(double a)
 {
-	return (a < 0 ? -a : a );
+	return (a < 0 ? -a : a);
 }

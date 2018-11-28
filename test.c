@@ -14,19 +14,21 @@
 void test(char* format, int value);
 void test_UL(char* format, unsigned long value);
 void test_str(char* format, char *string);
+void test_wstr(char* format, wchar_t *string);
 void test_locale();
 
 void test_lf(char* format, double value);
 
 int main()
 {
-	setbuf(stdout, NULL);
+//	setbuf(stdout, NULL);
 
-//	setlocale(LC_ALL, "en_US.UTF-8");
+	setlocale(LC_ALL, "en_US.UTF-8");
 
 //	test_locale();
 //	test("%lc", 0x4e6);
-//	test_UL("%.4S", L"我是一只猫。");
+//	test_wstr("%.4S", L"我是一只猫。");
+	test_wstr("%S", L"我是一只猫。");
 //	test_UL("%5lc", 350);
 //	test_UL("%C", 255);
 //	test_UL("%jc", L'☭');
@@ -137,6 +139,22 @@ void test_str(char* format, char *string)
 	if (errno)
 		puts(strerror(errno));
 }
+
+void test_wstr(char* format, wchar_t *string)
+{
+	int ret;
+
+	printf("TEST: %s, %ls\n", format, string);
+	ret = ft_printf(format, string);
+	printf(", %d", ret);
+	puts("");
+	puts("-- LIB --");
+	ret = printf(format, string);
+	printf(", %d\n", ret);
+	if (errno)
+		puts(strerror(errno));
+}
+
 void test(char* format, int value)
 {
 	int ret;

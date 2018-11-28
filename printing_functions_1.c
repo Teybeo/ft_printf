@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printing_functions_1.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/28 15:22:04 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/28 15:22:04 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printing.h"
 
 #include <stdlib.h>
 #include "libft.h"
 
-void print_hex(t_array *output, t_arg arg, unsigned long o)
+void	print_hex(t_array *output, t_arg arg, unsigned long o)
 {
 	size_t	hextoa_len;
 	char	*hextoa;
@@ -16,7 +28,7 @@ void print_hex(t_array *output, t_arg arg, unsigned long o)
 	if (o == 0 && arg.has_precision && arg.precision == 0)
 		hextoa[0] = '\0';
 	if (o == 0 && arg.has_precision && arg.precision == 0 && arg.min_width == 0)
-		return;
+		return ;
 	hextoa_len = ft_strlen(hextoa);
 	arg.min_width = ft_max(arg.min_width - has_prefix * 2, 0);
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
@@ -38,7 +50,7 @@ void print_hex(t_array *output, t_arg arg, unsigned long o)
 	free(hextoa);
 }
 
-void print_octal(t_array *output, t_arg arg, unsigned long o)
+void	print_octal(t_array *output, t_arg arg, unsigned long o)
 {
 	size_t	otoa_len;
 	char	*otoa;
@@ -52,7 +64,7 @@ void print_octal(t_array *output, t_arg arg, unsigned long o)
 	{
 		otoa[0] = '\0';
 		if (arg.min_width == 0)
-			return;
+			return ;
 	}
 	otoa_len = ft_strlen(otoa);
 	if (arg.min_width > 0 && arg.pad_with_zero && arg.has_precision == false)
@@ -72,7 +84,7 @@ void print_octal(t_array *output, t_arg arg, unsigned long o)
 	free(otoa);
 }
 
-void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
+void	print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 {
 	int		is_neg;
 	int		has_sign_char;
@@ -89,7 +101,7 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 		arg.precision = arg.min_width - has_sign_char;
 		arg.min_width = 0;
 	}
-	zero_count =  ft_max(arg.precision - digit_count, 0);
+	zero_count = ft_max(arg.precision - digit_count, 0);
 	blank_count = ft_max(arg.min_width - (itoa_len + zero_count), 0);
 	if (arg.left_adjust == false)
 		append_n_chars(output, ' ', blank_count);
@@ -105,7 +117,7 @@ void print_integer(t_array *output, t_arg arg, char *itoa, size_t itoa_len)
 ** If working precision is 0 and value is 0, dont print 0 but still print prefix
 */
 
-void print_int(t_array *output, t_arg arg, long l)
+void	print_int(t_array *output, t_arg arg, long l)
 {
 	char	*ltoa;
 
@@ -120,7 +132,7 @@ void print_int(t_array *output, t_arg arg, long l)
 ** If precision is 0 and value is 0, dont print 0 but still print prefix
 */
 
-void print_uint(t_array *output, t_arg arg, unsigned long l)
+void	print_uint(t_array *output, t_arg arg, unsigned long l)
 {
 	char	*ultoa;
 

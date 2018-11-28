@@ -1,5 +1,17 @@
-#ifndef FT_PRINTF
-# define FT_PRINTF
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/28 15:26:41 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/28 15:26:41 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
 
 int		ft_printf(const char *string, ...);
 

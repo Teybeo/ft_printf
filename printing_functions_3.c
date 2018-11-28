@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printing_functions_3.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/28 15:25:08 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/28 15:25:08 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printing.h"
 
 #include <stdlib.h>
 #include "libft.h"
 
-void print_invalid(t_array *output, t_arg arg, va_list list, int *error)
+void	print_invalid(t_array *output, t_arg arg, va_list list, int *error)
 {
 	if (arg.left_adjust == false)
 		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
@@ -15,13 +27,13 @@ void print_invalid(t_array *output, t_arg arg, va_list list, int *error)
 	(void)error;
 }
 
-void print_float(t_array *output, t_arg arg, double value)
+void	print_float(t_array *output, t_arg arg, double value)
 {
-	long			int_part;
-	char			*int_string;
-	char			has_sign_char;
-	size_t			int_digit_count;
-	size_t			digit_count; // Include the '.' and fractional part
+	long	int_part;
+	char	*int_string;
+	char	has_sign_char;
+	size_t	int_digit_count;
+	size_t	digit_count; // Include the '.' and fractional part
 
 	if (arg.has_precision == false)
 	{
@@ -48,7 +60,7 @@ void print_float(t_array *output, t_arg arg, double value)
 //	array_append(output, itoa, digit_count);
 	array_append(output, int_string, ft_strlen(int_string));
 	if (arg.precision)
-		array_append(output, ".", 1);;
+		array_append(output, ".", 1);
 #if 0
 	unsigned int precision = 1;
 	long double real_part = (value - (size_t)value);
@@ -78,7 +90,7 @@ void print_float(t_array *output, t_arg arg, double value)
 	free(int_string);
 }
 
-void print_address(t_array *output, t_arg arg, unsigned long ul)
+void	print_address(t_array *output, t_arg arg, unsigned long ul)
 {
 	size_t	hextoa_len;
 	char	*hextoa;
@@ -107,7 +119,7 @@ void print_address(t_array *output, t_arg arg, unsigned long ul)
 }
 
 
-void print_percent(t_array *output, t_arg arg, va_list list, int *error)
+void	print_percent(t_array *output, t_arg arg, va_list list, int *error)
 {
 	if (arg.left_adjust == false)
 		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);

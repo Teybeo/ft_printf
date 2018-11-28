@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/28 15:26:56 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/28 15:27:29 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <array.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -7,7 +19,28 @@
 #include "parsing.h"
 #include "processing.h"
 
-void consume_non_arg(const char *string, t_array *array, int *consumed);
+int		get_first_index(const char *string, char c)
+{
+	int	i;
+
+	i = 0;
+	while (string[i] != c && string[i] != '\0')
+		i++;
+	return (string[i] != '\0' ? i : -1);
+}
+
+void	consume_non_arg(const char *string, t_array *array, int *consumed)
+{
+	int	start_idx;
+
+	start_idx = get_first_index(string, '%');
+	if (start_idx == -1)
+	{
+		start_idx = (int)ft_strlen(string);
+	}
+	array_append(array, (void *)string, (size_t)start_idx);
+	*consumed = start_idx;
+}
 
 int		ft_printf(const char *string, ...)
 {
@@ -31,7 +64,7 @@ int		ft_printf(const char *string, ...)
 			if (error)
 			{
 				free(output.data);
-				return -1;
+				return (-1);
 			}
 		}
 		else
@@ -43,28 +76,5 @@ int		ft_printf(const char *string, ...)
 	va_end(list);
 	write(1, output.data, (size_t)output.size);
 	free(output.data);
-	return output.size;
-}
-
-int		get_first_index(const char *string, char c)
-{
-	int	i;
-
-	i = 0;
-	while (string[i] != c && string[i] != '\0')
-		i++;
-	return (string[i] != '\0' ? i : -1);
-}
-
-void consume_non_arg(const char *string, t_array *array, int *consumed)
-{
-	int	start_idx;
-
-	start_idx = get_first_index(string, '%');
-	if (start_idx == -1)
-	{
-		start_idx = (int)ft_strlen(string);
-	}
-	array_append(array, (void *)string, (size_t)start_idx);
-	*consumed = start_idx;
+	return (output.size);
 }

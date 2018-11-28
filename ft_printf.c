@@ -6,9 +6,11 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 15:26:56 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/28 15:27:29 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/28 17:39:31 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "ft_printf.h"
 
 #include <array.h>
 #include <stdarg.h>
@@ -42,39 +44,30 @@ void	consume_non_arg(const char *string, t_array *array, int *consumed)
 	*consumed = start_idx;
 }
 
-int		ft_printf(const char *string, ...)
+int		real_printf(t_array *output, const char *format, va_list list)
 {
-	va_list	list;
-	t_array	output;
 	t_arg	arg;
 	int		consumed;
 	int		error;
 
 	error = 0;
-	output = array_create(sizeof(char), 64);
-	va_start(list, string);
-	while (*string)
+	*output = array_create(sizeof(char), 64);
+	while (*format)
 	{
-		if (*string == '%')
+		if (*format == '%')
 		{
-			string++;
-			arg = get_next_arg(string, &consumed);
-			string += consumed;
-			process_arg2(&output, arg, list, &error);
+			format++;
+			arg = get_next_arg(format, &consumed);
+			format += consumed;
+			process_arg2(output, arg, list, &error);
 			if (error)
-			{
-				free(output.data);
 				return (-1);
-			}
 		}
 		else
 		{
-			consume_non_arg(string, &output, &consumed);
-			string += consumed;
+			consume_non_arg(format, output, &consumed);
+			format += consumed;
 		}
 	}
-	va_end(list);
-	write(1, output.data, (size_t)output.size);
-	free(output.data);
-	return (output.size);
+	return (output->size);
 }

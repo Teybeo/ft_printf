@@ -24,7 +24,8 @@ set(SOURCES
     libft/ft_putchar_fd.c
     libft/ft_otoa.c
     libft/ft_hextoa.c
-    libft/ft_wctomb.c libft/ft_abs_double.c)
+    libft/ft_wctomb.c
+    libft/ft_abs_double.c)
 
 set(TEST_SOURCES
     ft_printf.c
@@ -36,7 +37,10 @@ set(TEST_SOURCES
     processing_functions_2.c
     printing_functions_1.c
     printing_functions_2.c
-    test.c printing_functions_3.c)
+    printing_functions_3.c
+    variants_printf.c
+    variants_vprintf.c
+    test.c)
 
 add_library(printf ${SOURCES})
 

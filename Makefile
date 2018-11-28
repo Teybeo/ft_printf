@@ -1,6 +1,8 @@
 NAME := libftprintf.a
 
 FILES += ft_printf.c
+FILES += variants_printf.c
+FILES += variants_vprintf.c
 FILES += parsing.c
 FILES += parsing_functions_1.c
 FILES += parsing_functions_2.c

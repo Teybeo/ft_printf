@@ -60,7 +60,7 @@ int main()
 //	test_str("%S", (char *) L"我是一只猫。");
 //	test_str("%S", L"米");
 //	test_UL("%C", 0x40501);
-
+	test_str("hello", "abc");
 //	ft_printf("%C", 0x001fffff);
 //	ft_printf("%C", 0x40501);
 //	printf("%C", 0x40501);

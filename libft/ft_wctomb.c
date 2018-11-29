@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 15:23:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/28 15:23:39 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/29 14:11:31 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,53 +26,40 @@
 #define MASK_BIT_12_TO_17 258048
 #define MASK_BIT_18_TO_20 1835008
 
+/*
+** Wide char to multi-byte (utf-8)
+** MB_CUR_MAX depends on the current locale
+** 0  to 7  bits = 1 byte
+** 8  to 11 bits = 2 bytes
+** 12 to 17 bits = 3 bytes
+** 17 to 21 bits = 4 bytes
+** If MB_CUR_MAX == 1, the first byte can hold the full 0 to 8 bits range
+** Return 0 if c < 0 (need separate test because negative wchar_t can overflow)
+*/
+
 char	ft_wctomb(char *buffer, wchar_t c)
 {
-	if (c < 0)
-		return (0);
-	// 0 to 7 bits
 	if (c <= 127 || (c <= 255 && MB_CUR_MAX == 1))
+		return ((c >= 0) && ((buffer[0] = (char)c) >= 0));
+	else if (c <= 2047 && MB_CUR_MAX >= 2)
 	{
-		buffer[0] = (char)c;
-		return (1);
-	}
-	// 8 to 11 bits
-	else if (c <= 2047)
-	{
-		if (MB_CUR_MAX < 2)
-			return (0);
-		buffer[0] = HEADER_2_BYTES;
-		buffer[0] |= (c & MASK_BIT_6_TO_10) >> 6;
-		buffer[1] = HEADER_1_BYTE;
-		buffer[1] |= (c & MASK_BIT_0_TO_5);
+		buffer[0] = HEADER_2_BYTES | (c & MASK_BIT_6_TO_10) >> 6;
+		buffer[1] = HEADER_1_BYTE | (c & MASK_BIT_0_TO_5);
 		return (2);
 	}
-	// 12 to 16 bits
-	else if (c <= 65535)
+	else if (c <= 65535 && MB_CUR_MAX >= 3 && (c < 0xD800 || c > 0xDFFF))
 	{
-		if (MB_CUR_MAX < 3 || (c >= 0xD800 && c <= 0xDFFF))
-			return (0);
-		buffer[0] = HEADER_3_BYTES;
-		buffer[0] |= (c & MASK_BIT_12_TO_15) >> 12;
-		buffer[1] = HEADER_1_BYTE;
-		buffer[1] |= (c & MASK_BIT_6_TO_11) >> 6;
-		buffer[2] = HEADER_1_BYTE;
-		buffer[2] |= (c & MASK_BIT_0_TO_5);
+		buffer[0] = HEADER_3_BYTES | (c & MASK_BIT_12_TO_15) >> 12;
+		buffer[1] = HEADER_1_BYTE | (c & MASK_BIT_6_TO_11) >> 6;
+		buffer[2] = HEADER_1_BYTE | (c & MASK_BIT_0_TO_5);
 		return (3);
 	}
-	// 17 to 21 bits
-	else if (c <= 0x10FFFF)
+	else if (c <= 0x10FFFF && MB_CUR_MAX >= 4)
 	{
-		if (MB_CUR_MAX < 4)
-			return (0);
-		buffer[0] = HEADER_4_BYTES;
-		buffer[0] |= (c & MASK_BIT_18_TO_20) >> 18;
-		buffer[1] = HEADER_1_BYTE;
-		buffer[1] |= (c & MASK_BIT_12_TO_17) >> 12;
-		buffer[2] = HEADER_1_BYTE;
-		buffer[2] |= (c & MASK_BIT_6_TO_11) >> 6;
-		buffer[3] = HEADER_1_BYTE;
-		buffer[3] |= (c & MASK_BIT_0_TO_5);
+		buffer[0] = HEADER_4_BYTES | (c & MASK_BIT_18_TO_20) >> 18;
+		buffer[1] = HEADER_1_BYTE | (c & MASK_BIT_12_TO_17) >> 12;
+		buffer[2] = HEADER_1_BYTE | (c & MASK_BIT_6_TO_11) >> 6;
+		buffer[3] = HEADER_1_BYTE | (c & MASK_BIT_0_TO_5);
 		return (4);
 	}
 	return (0);

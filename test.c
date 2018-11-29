@@ -28,7 +28,7 @@ int main()
 //	test_locale();
 //	test("%lc", 0x4e6);
 //	test_wstr("%.4S", L"我是一只猫。");
-	test_wstr("%S", L"我是一只猫。");
+//	test_wstr("%S", L"我是一只猫。");
 //	test_UL("%5lc", 350);
 //	test_UL("%C", 255);
 //	test_UL("%jc", L'☭');
@@ -60,7 +60,7 @@ int main()
 //	test_str("%S", (char *) L"我是一只猫。");
 //	test_str("%S", L"米");
 //	test_UL("%C", 0x40501);
-	test_str("hello", "abc");
+//	test_str("hello", "abc");
 //	ft_printf("%C", 0x001fffff);
 //	ft_printf("%C", 0x40501);
 //	printf("%C", 0x40501);
@@ -89,6 +89,9 @@ int main()
 	// printing 0 as octal with 0 precision but X width
 //	test_UL("%-05.o", 0);
 //	test_UL("%#1.o", 0);
+//	test_UL("%C", -214);
+
+	test_UL("%lc", 0xd800);
 
 	for (unsigned char i = 0; i < 255; ++i)
 	{

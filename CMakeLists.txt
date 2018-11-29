@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 project(printf C)
 
-set(CMAKE_C_STANDARD 99)
+#set(CMAKE_C_STANDARD 99)
 
 add_compile_options(-Wall -Wextra)
 
@@ -38,9 +38,11 @@ set(TEST_SOURCES
     printing_functions_1.c
     printing_functions_2.c
     printing_functions_3.c
+    printing_utils.c
     variants_printf.c
     variants_vprintf.c
-    test.c)
+    test.c
+        )
 
 add_library(printf ${SOURCES})
 

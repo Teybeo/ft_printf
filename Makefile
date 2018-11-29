@@ -9,6 +9,7 @@ FILES += parsing_functions_2.c
 FILES += printing_functions_1.c
 FILES += printing_functions_2.c
 FILES += printing_functions_3.c
+FILES += printing_utils.c
 FILES += processing.c
 FILES += processing_functions_1.c
 FILES += processing_functions_2.c

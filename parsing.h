@@ -18,7 +18,7 @@
 
 struct	s_arg
 {
-	bool	alternate_form;
+	bool	alternat_form;
 	bool	left_adjust;
 	bool	pad_with_zero;
 	bool	short_modifier;

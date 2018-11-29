@@ -31,7 +31,7 @@ bool	positive_prefix(t_arg *arg, const char **ptr)
 bool	hashtag_token(t_arg *arg, const char **ptr)
 {
 	(void)ptr;
-	arg->alternate_form = true;
+	arg->alternat_form = true;
 	return (false);
 }
 

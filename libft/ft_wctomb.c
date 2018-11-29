@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 15:23:39 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/29 14:11:31 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/29 17:03:34 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,27 +40,27 @@
 char	ft_wctomb(char *buffer, wchar_t c)
 {
 	if (c <= 127 || (c <= 255 && MB_CUR_MAX == 1))
-		return ((c >= 0) && ((buffer[0] = (char)c) >= 0));
-	else if (c <= 2047 && MB_CUR_MAX >= 2)
+		return ((buffer[0] = (char)c) | 1) && (c >= 0);
+	else if (c <= 2047)
 	{
 		buffer[0] = HEADER_2_BYTES | (c & MASK_BIT_6_TO_10) >> 6;
 		buffer[1] = HEADER_1_BYTE | (c & MASK_BIT_0_TO_5);
-		return (2);
+		return (2 * (MB_CUR_MAX >= 2));
 	}
-	else if (c <= 65535 && MB_CUR_MAX >= 3 && (c < 0xD800 || c > 0xDFFF))
+	else if (c <= 65535)
 	{
 		buffer[0] = HEADER_3_BYTES | (c & MASK_BIT_12_TO_15) >> 12;
 		buffer[1] = HEADER_1_BYTE | (c & MASK_BIT_6_TO_11) >> 6;
 		buffer[2] = HEADER_1_BYTE | (c & MASK_BIT_0_TO_5);
-		return (3);
+		return (3 * (MB_CUR_MAX >= 3 && (c < 0xD800 || c > 0xDFFF)));
 	}
-	else if (c <= 0x10FFFF && MB_CUR_MAX >= 4)
+	else if (c <= 0x10FFFF)
 	{
 		buffer[0] = HEADER_4_BYTES | (c & MASK_BIT_18_TO_20) >> 18;
 		buffer[1] = HEADER_1_BYTE | (c & MASK_BIT_12_TO_17) >> 12;
 		buffer[2] = HEADER_1_BYTE | (c & MASK_BIT_6_TO_11) >> 6;
 		buffer[3] = HEADER_1_BYTE | (c & MASK_BIT_0_TO_5);
-		return (4);
+		return (4 * (MB_CUR_MAX >= 4));
 	}
 	return (0);
 }

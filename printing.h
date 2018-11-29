@@ -1,10 +1,34 @@
-#ifndef PRINTF_PRINTING_H
-#define PRINTF_PRINTING_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printing.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/11/29 16:08:22 by tdarchiv          #+#    #+#             */
+/*   Updated: 2018/11/29 16:08:22 by tdarchiv         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "array.h"
-#include "parsing.h"
+#ifndef PRINTING_H
+# define PRINTING_H
 
-#include <stdarg.h>
+# include "array.h"
+# include "parsing.h"
+
+# include <stdarg.h>
+
+struct	s_format_result
+{
+	int		blank_count;
+	int		zero_count;
+	bool	left_adjust;
+	char	*string;
+	int		str_len;
+	char	*prefix;
+	int		prefix_len;
+};
+typedef struct s_format_result	t_format_result;
 
 void	print_int(t_array *output, t_arg arg, long l);
 void	print_octal(t_array *output, t_arg arg, unsigned long o);
@@ -20,5 +44,6 @@ void	print_invalid(t_array *output, t_arg arg, va_list list, int *error);
 void	print_percent(t_array *output, t_arg arg, va_list list, int *error);
 
 void	append_n_chars(t_array *array, char c, int i);
+void	format_string(t_array *output, t_format_result format);
 
 #endif

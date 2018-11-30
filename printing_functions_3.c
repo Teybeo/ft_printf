@@ -6,19 +6,23 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/28 15:25:08 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/28 15:25:08 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/30 16:56:39 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "printing.h"
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <assert.h>
 #include "libft.h"
 
 void	print_invalid(t_array *output, t_arg arg, va_list list, int *error)
 {
 	if (arg.left_adjust == false)
-		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
+		append_n_chars(output, arg.pad_with_zero ? '0' : ' ',
+				arg.min_width - 1);
 	if (ft_isprint(arg.token))
 		array_append(output, &arg.token, 1);
 	if (arg.left_adjust)
@@ -27,67 +31,56 @@ void	print_invalid(t_array *output, t_arg arg, va_list list, int *error)
 	(void)error;
 }
 
-void	print_float(t_array *output, t_arg arg, double value)
+void	append_real_part(t_array *output, t_arg arg, long double value,
+		int blank_count)
 {
-	long	int_part;
-	char	*int_string;
-	char	has_sign_char;
-	size_t	int_digit_count;
-	size_t	digit_count; // Include the '.' and fractional part
+	char		digit;
+	long double	temp_value;
+
+	if (arg.precision)
+		array_append(output, ".", 1);
+	value = ft_abs_double(value);
+	value = value - (long)value;
+	temp_value = value;
+	while (arg.precision > 0)
+	{
+		temp_value *= 10;
+		digit = ((char)temp_value) + '0';
+		array_append(output, &digit, 1);
+		temp_value -= (unsigned long)temp_value;
+		arg.precision--;
+	}
+	if (arg.left_adjust)
+		append_n_chars(output, ' ', blank_count);
+}
+
+void	print_float(t_array *output, t_arg arg, long double value)
+{
+	char			has_sign_char;
+	size_t			digit_count;
+	t_format_result	fmt;
 
 	if (arg.has_precision == false)
 	{
 		arg.has_precision = true;
 		arg.precision = 6;
 	}
-//	char is_neg = value < 0;
-//	value *= is_neg * -1;
-	int_part = (long int)value;
-	int_string = ft_ltoa_sign(int_part, arg.plus_sign);
-	int_digit_count = ft_strlen(int_string);
-	has_sign_char = ft_isdigit(int_string[0]) == false;
-	digit_count = int_digit_count + (arg.has_precision && arg.precision) + arg.precision;
-	ft_memcpy(int_string, int_string + has_sign_char, int_digit_count);
-	int zero_count = arg.pad_with_zero * ft_max(arg.min_width - (digit_count + has_sign_char + arg.precision), 0);
-	int blank_count = ft_max(arg.min_width - (digit_count + has_sign_char + zero_count), 0);
-//	printf("zero_count: %d\n", zero_count);
-//	printf("blank_count: %d\n", blank_count);
-	if (arg.left_adjust == false)
-		append_n_chars(output, ' ', blank_count);
+	fmt.string = ft_ltoa_sign(value, arg.plus_sign);
+	fmt.str_len = ft_strlen(fmt.string);
+	has_sign_char = ft_isdigit(fmt.string[0]) == false;
+	digit_count =
+			fmt.str_len + (arg.has_precision && arg.precision) + arg.precision;
+	ft_memcpy(fmt.string, fmt.string + has_sign_char, fmt.str_len);
+	fmt.zero_count = arg.pad_with_zero *
+	ft_max(arg.min_width - (digit_count + has_sign_char + arg.precision), 0);
+	fmt.blank_count = ft_max(arg.min_width - (digit_count + fmt.zero_count), 0);
+	append_n_chars(output, ' ', fmt.blank_count * (arg.left_adjust == false));
 	if (has_sign_char)
 		array_append(output, (value < 0) ? "-" : &arg.plus_sign, 1);
-	append_n_chars(output, '0', zero_count);
-//	array_append(output, itoa, digit_count);
-	array_append(output, int_string, ft_strlen(int_string));
-	if (arg.precision)
-		array_append(output, ".", 1);
-#if 0
-	unsigned int precision = 1;
-	long double real_part = (value - (size_t)value);
-	while (precision <= arg.precision)
-	{
-		size_t tmp = (size_t)(real_part * powl(10, precision));
-		tmp %= 10;
-		char digit = (char)(tmp + '0');
-		array_append(output, &digit, 1);
-		precision++;
-	}
-#else
-	int precision = (int)arg.precision;
-	value = ft_abs_double(value - (long)value);
-	long double temp_value;
-	while (precision > 0)
-	{
-		temp_value = value * 10;
-		char digit = ((char)temp_value) + '0';
-		array_append(output, &digit, 1);
-		value = temp_value - (unsigned long)temp_value;
-		precision--;
-	}
-#endif
-	if (arg.left_adjust)
-		append_n_chars(output, ' ', blank_count);
-	free(int_string);
+	append_n_chars(output, '0', fmt.zero_count);
+	array_append(output, fmt.string, ft_strlen(fmt.string));
+	append_real_part(output, arg, value, fmt.blank_count);
+	free(fmt.string);
 }
 
 void	print_address(t_array *output, t_arg arg, unsigned long ul)
@@ -118,20 +111,14 @@ void	print_address(t_array *output, t_arg arg, unsigned long ul)
 	free(hextoa);
 }
 
-
 void	print_percent(t_array *output, t_arg arg, va_list list, int *error)
 {
 	if (arg.left_adjust == false)
-		append_n_chars(output, arg.pad_with_zero ? '0' : ' ', arg.min_width - 1);
+		append_n_chars(output, arg.pad_with_zero ? '0' : ' ',
+				arg.min_width - 1);
 	array_append(output, "%", 1);
 	if (arg.left_adjust)
 		append_n_chars(output, ' ', arg.min_width - 1);
 	(void)list;
 	(void)error;
-}
-
-void	append_n_chars(t_array *array, char c, int i)
-{
-	while (i-- > 0)
-		array_append(array, &c, 1);
 }

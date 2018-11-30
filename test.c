@@ -10,6 +10,8 @@
 #include <errno.h>
 #include <memory.h>
 #include <float.h>
+#include <time.h>
+#include <math.h>
 
 void test(char* format, int value);
 void test_UL(char* format, unsigned long value);
@@ -72,7 +74,7 @@ int main()
 //	printf("%f", DBL_MAX);
 //	test_lf("%20.60lf", 42420412345678901.);
 //	test_lf("%20.60lf", 0.42420412345678901);
-//	test_lf("%10.5lf", -10.5); // BUG HERE
+//	test_lf("%10.5lf", -4.5); // BUG HERE
 //	printf("%.1lf", 42.);
 
 //	printf
@@ -90,20 +92,50 @@ int main()
 //	test_UL("%-05.o", 0);
 //	test_UL("%#1.o", 0);
 //	test_UL("%C", -214);
-
-	test_UL("%lc", 0xd800);
-
+	srand(1);
+//	test_lf("%3.9f", 27.09L);
+	test_lf("%4.1f", 89.8);
+	test_lf("%4.1f", 41.22);
+	float max = 10000.f;
 	for (unsigned char i = 0; i < 255; ++i)
 	{
-		if (i == 42 || i == 110)
-			continue;
-		char buffer[] = "%20Ws";
-		buffer[3] = i;
+		char format[] = "%5.1f";
+		format[1] = '0' + rand() % 10;
+		//format[3] = '0' + rand() % 10;
+		double x = rand() % (int)max;
+		x -= max / 2;
+		x /= powf(10, rand() % 3);
+//		test_lf(format, x);
 //		ft_printf("i: %d (%c) -> [", i, i);
 //		test_str(buffer, "lol");
 //		ft_printf("]\n");
 	}
-
+	double x1=46.51L;
+//	test_lf("%34.18f", x1);
+	test_lf("%9.9f", x1);
+	test_lf("%9.8f", x1);
+	test_lf("%9.7f", x1);
+	test_lf("%9.6f", x1);
+	test_lf("%9.5f", x1);
+	test_lf("%9.4f", x1);
+	test_lf("%9.3f", x1);
+	test_lf("%9.2f", x1);
+	test_lf("%9.1f", x1);
+	test_lf("%.0f", 1.4);
+	test_lf("%.f", 1.5);
+	test_lf("%.f", -1.6);
+	test_lf("%.f", 2.6);
+	test_lf("%.f", 2.5);
+	test_lf("%.f", -2.4);
+	test_lf("%8.6f", -27.19L);
+/*
+ 	double x1=108.765625;
+	test_lf("%34.30f\n", x1);
+	test_lf("%9.5f\n", x1);
+	double x2=108.046875;
+	test_lf("%34.30lf\n", x2);
+	test_lf("%9.5f\n", x2);
+*/
 
 
 	return 0;
@@ -118,7 +150,7 @@ void test_lf(char* format, double value)
 {
 	int ret;
 
-	printf("TEST: %s, %lf\n", format, value);
+	printf("TEST: %s, %.15f\n", format, value);
 	ret = ft_printf(format, value);
 	printf(", %d", ret);
 	puts("");

@@ -23,3 +23,9 @@ void	format_string(t_array *output, t_format_result format)
 	if (format.left_adjust)
 		append_n_chars(output, ' ', format.blank_count);
 }
+
+void	append_n_chars(t_array *array, char c, int i)
+{
+	while (i-- > 0)
+		array_append(array, &c, 1);
+}

@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/26 16:11:18 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/28 12:04:55 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/30 18:27:28 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	table_init_part2(t_parsing_fn table[255])
 {
 	table['h'] = modifiers_tokens;
 	table['l'] = modifiers_tokens;
+	table['L'] = modifiers_tokens;
 	table['z'] = modifiers_tokens;
 	table['j'] = modifiers_tokens;
 	table[' '] = positive_prefix;
@@ -39,6 +40,7 @@ void	table_init_part2(t_parsing_fn table[255])
 	table['7'] = field_width_parsing;
 	table['8'] = field_width_parsing;
 	table['9'] = field_width_parsing;
+	table['b'] = simple_token;
 }
 
 void	init_table(t_parsing_fn table[255])

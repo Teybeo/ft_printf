@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 17:48:48 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/11/27 18:07:48 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/30 17:52:35 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static void	init_table(t_printing_fn table[128])
 	table['f'] = print_f;
 	table['F'] = print_f;
 	table['%'] = print_percent;
+	table['b'] = print_b;
 }
 
 void		process_arg2(t_array *output, t_arg arg, va_list list, int *error)

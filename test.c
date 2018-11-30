@@ -94,8 +94,8 @@ int main()
 //	test_UL("%C", -214);
 	srand(1);
 //	test_lf("%3.9f", 27.09L);
-	test_lf("%4.1f", 89.8);
-	test_lf("%4.1f", 41.22);
+//	test_lf("%4.1f", 89.8);
+//	test_lf("%4.1f", 41.22);
 	float max = 10000.f;
 	for (unsigned char i = 0; i < 255; ++i)
 	{
@@ -112,22 +112,25 @@ int main()
 	}
 	double x1=46.51L;
 //	test_lf("%34.18f", x1);
-	test_lf("%9.9f", x1);
-	test_lf("%9.8f", x1);
-	test_lf("%9.7f", x1);
-	test_lf("%9.6f", x1);
-	test_lf("%9.5f", x1);
-	test_lf("%9.4f", x1);
-	test_lf("%9.3f", x1);
-	test_lf("%9.2f", x1);
-	test_lf("%9.1f", x1);
-	test_lf("%.0f", 1.4);
-	test_lf("%.f", 1.5);
-	test_lf("%.f", -1.6);
-	test_lf("%.f", 2.6);
-	test_lf("%.f", 2.5);
-	test_lf("%.f", -2.4);
-	test_lf("%8.6f", -27.19L);
+//	test_lf("%9.9f", x1);
+//	test_lf("%9.8f", x1);
+//	test_lf("%9.7f", x1);
+//	test_lf("%9.6f", x1);
+//	test_lf("%9.5f", x1);
+//	test_lf("%9.4f", x1);
+//	test_lf("%9.3f", x1);
+//	test_lf("%9.2f", x1);
+//	test_lf("%9.1f", x1);
+//	test_lf("%.0f", 1.4);
+//	test_lf("%.f", 1.5);
+//	test_lf("%.f", -1.6);
+//	test_lf("%.f", 2.6);
+//	test_lf("%.f", 2.5);
+//	test_lf("%.f", -2.4);
+//	test_lf("%8.6Ld", -27.19);
+	printf("%f", 4543513513514.4L);
+//	float a = 1024;
+//	ft_printf("%b", &a);
 /*
  	double x1=108.765625;
 	test_lf("%34.30f\n", x1);

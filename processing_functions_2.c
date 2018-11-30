@@ -52,6 +52,9 @@ void	print_ws(t_array *output, t_arg arg, va_list list, int *error)
 
 void	print_f(t_array *output, t_arg arg, va_list list, int *error)
 {
-	print_float(output, arg, va_arg(list, double));
+	if (arg.long_double)
+		print_float(output, arg, va_arg(list, long double));
+	else
+		print_float(output, arg, va_arg(list, double));
 	(void)error;
 }

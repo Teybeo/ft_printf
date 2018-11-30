@@ -26,6 +26,7 @@ struct	s_arg
 	bool	long_modifier;
 	bool	has_precision;
 	bool	uppercase_prefix;
+	bool	long_double;
 	char	token;
 	char	plus_sign;
 	size_t	min_width;

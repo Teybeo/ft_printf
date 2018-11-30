@@ -54,6 +54,8 @@ bool	modifiers_tokens(t_arg *arg, const char **ptr)
 	token = **ptr;
 	if (token == 'l' || token == 'z' || token == 'j')
 		arg->long_modifier = true;
+	else if (token == 'L')
+		arg->long_double = true;
 	else if (token == 'h')
 	{
 		arg->double_short_modifier = arg->short_modifier;

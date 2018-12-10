@@ -6,7 +6,7 @@
 /*   By: tdarchiv <tdarchiv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/09 18:37:44 by tdarchiv          #+#    #+#             */
-/*   Updated: 2018/10/30 16:16:34 by tdarchiv         ###   ########.fr       */
+/*   Updated: 2018/11/30 19:05:52 by tdarchiv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,4 @@ void	shrink_to_fit(t_array *vec)
 						vec->capacity * vec->elem_size,
 						vec->size * vec->elem_size);
 	vec->capacity = (size_t)vec->size;
-}
-
-void	print_stats(t_array arr, char *msg)
-{
-	printf("%s: %.2f KB,  %i / %zu * %zu B\n",
-		msg,
-		(arr.capacity * arr.elem_size) / 1024.f,
-		arr.size, arr.capacity, arr.elem_size);
 }
